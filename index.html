@@ -5,11 +5,12 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <link rel="icon" href="media/veyra.svg">
 <style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
-<title>Veyra</title>
-<meta name="description" content="Veyra puts the lab procedure above the instrument: a mixed-reality assistant for Meta Quest 3, written at the desk in Veyra Studio, followed at the bench.">
+<title data-i18n="meta.title">Veyra · The hands-free lab assistant</title>
+<meta name="description" content="Veyra puts the lab procedure above the instrument: a mixed-reality assistant for Meta Quest 3, written at the desk in Veyra Studio, followed at the bench." data-i18n-attr="content:meta.desc">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<link rel="stylesheet" href="buttons.css">
 <style>
 /* One pitch, one procedure travelling from the desk to the bench, in the order of a product page:
    live hero (header video into the with/without bench), six features as real headset loops, three
@@ -73,7 +74,8 @@ q { quotes: "\201C" "\201D"; color: var(--fg); }
    folds into a circle holding just the logo, at the left, out of the way (.fold). Clicking the circle unfolds it into
    a blurred pill growing out of the logo (.open); a click elsewhere, a link, Esc or more scrolling folds it again.
    Folded and unfolded it sits at the screen's left edge, so it folds toward the logo. A highlight follows the hovered link. */
-.nav { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 20; pointer-events: none; }
+/* above the flying Studio window (20) and the privacy heading it passes (21), so nothing ever draws over the bar */
+.nav { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 30; pointer-events: none; }
 .nav .wrap { position: relative; pointer-events: auto; display: flex; flex-wrap: nowrap; align-items: center; gap: var(--s-6); height: 60px; padding-block: 0;
   margin-left: max(0px, calc((100% - var(--wrap)) / 2)); margin-right: auto; border: 1px solid transparent; border-radius: 999px; transform: translateY(0);
   transition: max-width 0.7s cubic-bezier(0.2, 0.8, 0.2, 1), margin 0.7s cubic-bezier(0.2, 0.8, 0.2, 1), transform 0.7s cubic-bezier(0.2, 0.8, 0.2, 1), padding 0.7s cubic-bezier(0.2, 0.8, 0.2, 1), gap 0.7s, background 0.4s, border-color 0.4s, box-shadow 0.4s, opacity 0.4s; }
@@ -107,7 +109,8 @@ q { quotes: "\201C" "\201D"; color: var(--fg); }
 .nav.fold .nav-menu { right: auto; width: calc(100vw - 2 * var(--gutter)); }
 .nav-menu.open { opacity: 1; transform: none; visibility: visible; transition: opacity 0.25s, transform 0.25s; }
 .nav-menu a:not(.btn) { color: var(--fg); text-decoration: none; font-size: 18px; }
-.nav-menu .btn { justify-content: center; }
+.nav-menu .btn .btn-label { flex: 1; text-align: center; }
+.nav-menu { overflow: clip; } /* the button's bubble layer is wider than the panel; there is no hover to show it on a phone */
 @media (prefers-reduced-motion: reduce) { .nav .wrap, .nav-hl, .nav-menu { transition: none; } }
 /* scrolled: the bar turns solid with a hairline under it */
 .nav { transition: background 0.3s, border-color 0.3s; border-bottom: 1px solid transparent; }
@@ -117,16 +120,15 @@ q { quotes: "\201C" "\201D"; color: var(--fg); }
 .nav-links a:hover { text-decoration-color: currentColor; }
 /* the section on screen is marked in the nav, so scrolling always says where you are */
 .nav-links a.is-here { color: var(--fg); text-decoration-color: var(--teal); text-decoration-thickness: 2px; }
-.btn { display: inline-flex; align-items: center; gap: var(--s-2); text-decoration: none; cursor: pointer; font: 600 15px/1 var(--display); padding: var(--s-3) var(--s-5); border-radius: 999px; border: 1px solid var(--line); background: transparent; color: var(--fg); }
-.btn { min-height: 44px; }
-.nav .wrap > .btn { min-height: 0; } /* the desktop bar, pointer only */
-.btn:hover { border-color: var(--fg-dim); }
-.btn-solid { background: var(--fg); color: var(--ink); border-color: var(--fg); }
-.btn-solid:hover { background: #fff; }
-.nav .btn { padding: var(--s-2) var(--s-4); font-size: 14px; }
+/* language: the EN / IT toggle lives in buttons.css */
+.sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+.nav .wrap > .btn { margin-left: var(--s-2); }
 @media (max-width: 760px) {
   .nav-links, .nav .wrap > .btn { display: none; }
-  .nav-toggle { display: grid; margin-left: auto; }
+  /* the language stays in the bar on a phone, beside the menu button, with full-size touch targets */
+  .lang { margin-left: auto; }
+  .nav .wrap { gap: var(--s-2); }
+  .nav-toggle { display: grid; width: 44px; height: 44px; }
   /* on a phone the circle stays a circle and opens the menu under it */
   .nav.fold .nav-toggle { display: none; }
   .nav.fold.open .wrap { max-width: 60px; padding: 7px; gap: 0; }
@@ -136,10 +138,12 @@ q { quotes: "\201C" "\201D"; color: var(--fg); }
 /* intro: the header video, the headset on the bench. Scrolling blurs it out while the bench capture comes into focus
    over it; once it is sharp the numbers come in. One pinned stage, scrubbed by scroll. */
 /* the stage runs under the nav, which floats clear over it */
-.intro { position: relative; padding: 0; margin-top: calc(-1 * var(--navh, 64px)); height: calc(100svh + 120svh); }
+.intro { position: relative; padding: 0; margin-top: calc(-1 * var(--navh, 64px)); height: calc(100svh + 90svh); }
 .intro-stage { position: sticky; top: 0; height: 100svh; overflow: hidden; isolation: isolate; background: #000; }
 .hero-layer { position: absolute; inset: 0; overflow: hidden; background: var(--ink); filter: blur(var(--hbl, 0px)) brightness(var(--hb, 1)); }
-.intro-video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.intro-video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 50% 50%; }
+/* portrait screens crop the footage to a sliver: keep the headset (right of centre, low) in the frame, not the bare wall */
+@media (max-aspect-ratio: 1/1) { .intro-video { object-position: 58% 50%; } }
 .intro-shade { position: absolute; inset: 0; pointer-events: none;
   background:
     linear-gradient(90deg, rgba(11, 13, 16, 0.8) 0%, rgba(11, 13, 16, 0.45) 50%, rgba(11, 13, 16, 0.1) 100%),
@@ -147,13 +151,12 @@ q { quotes: "\201C" "\201D"; color: var(--fg); }
 /* the words sit low on the left, on the dark part of the footage, like a film's title; the facts rule off the foot */
 .intro-copy { position: absolute; inset: 0; display: flex; flex-direction: column; justify-content: flex-end;
   padding-top: calc(var(--navh, 64px) + var(--s-6)); padding-bottom: clamp(var(--s-5), 4vh, var(--s-7)); }
-.intro-main { display: grid; gap: clamp(var(--s-4), 2.6vh, var(--s-5)); width: fit-content; max-width: 100%; }
-/* the lede is set to the headline's measure and justified, so both share one left and one right edge */
-.intro .lede { width: 0; min-width: 100%; max-width: none; text-align: justify; text-align-last: left; hyphens: auto; -webkit-hyphens: auto; }
-@media (min-width: 821px) { .intro h1 .ln { white-space: nowrap; } }
-/* the copy keeps to the left half and leaves the other half to the video, on the page's left edge */
-.intro h1 { font-size: clamp(42px, 5.6vw, 84px); font-weight: 600; line-height: 1; letter-spacing: -0.035em; }
-@media (max-width: 820px) { .intro h1 { font-size: clamp(36px, 10vw, 60px); } }
+.intro-main { display: grid; gap: clamp(var(--s-4), 2.6vh, var(--s-5)); max-width: min(100%, 40rem); }
+/* the product's name is the headline, set as large as the screen allows; what it is comes right under it,
+   then one plain line on where it runs. The name is one word, so it is cut tight. */
+.intro h1 { font-size: clamp(64px, min(12vw, 19vh), 184px); font-weight: 600; line-height: 0.9; letter-spacing: -0.05em; margin-left: -0.04em; }
+.intro-tag { font-size: clamp(24px, 2.6vw, 38px); font-weight: 600; line-height: 1.1; letter-spacing: -0.02em; color: var(--fg); margin-top: calc(-1 * var(--s-2)); }
+.intro .lede { max-width: 30em; text-align: left; }
 .intro h1 .ln { display: block; overflow: hidden; padding-bottom: 0.1em; margin-bottom: -0.1em; }
 .intro h1 .ln-i { display: inline-block; }
 /* the entrance, once on load: the headline rises line by line out of its masks, then the rest settles up */
@@ -174,12 +177,8 @@ q { quotes: "\201C" "\201D"; color: var(--fg); }
 @keyframes cue-scroll { 0% { transform: translateY(40%); } 50% { transform: translateY(90%); } }
 @media (prefers-reduced-motion: reduce) { .cue span { animation: none; } }
 .ctas { display: flex; flex-wrap: wrap; gap: var(--s-3); }
-.text-link { display: inline-flex; align-items: center; gap: var(--s-2); min-height: 44px; font: 600 15px/1 var(--display); color: var(--fg); text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 6px; }
-.text-link span { transition: transform 0.2s; }
-.text-link:hover span { transform: translateX(3px); }
-.btn-glass { background: rgba(11, 13, 16, 0.35); border-color: rgba(238, 241, 239, 0.32); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); }
 .intro-copy { pointer-events: none; }
-.intro-copy .ctas { pointer-events: auto; align-items: center; gap: var(--s-3) var(--s-6); }
+.intro-copy .ctas { pointer-events: auto; align-items: center; gap: var(--s-3) var(--s-7); } /* room for the hover bubble */
 
 /* the capture: fades in out of focus and sharpens as it comes through */
 .lens { position: absolute; inset: 0; z-index: 2; overflow: hidden; background: var(--ink); pointer-events: none; opacity: var(--lo, 0); filter: blur(var(--lbl, 0px)); }
@@ -212,10 +211,12 @@ q { quotes: "\201C" "\201D"; color: var(--fg); }
 .follow span:not(.is-spot) { background: rgba(11, 13, 16, 0.82); color: var(--fg); }
 .lens.on-with .plate { cursor: none; }
 @media (prefers-reduced-motion: reduce) { .follow svg, .follow span { transition: none; } }
-.sides span { font: 500 12px/1 var(--mono); color: var(--fg); padding: 7px 10px; border-radius: 3px; background: rgba(11, 13, 16, 0.78); }
+.sides span { font: 600 13px/1 var(--display); color: var(--fg); padding: 7px 10px; border-radius: 3px; background: rgba(11, 13, 16, 0.78); }
 @media (max-width: 820px) {
-  /* a portrait screen would crop the bench down to its middle: show the capture whole */
-  .plate { width: 100%; top: 50%; }
+  /* a portrait screen: the capture shown whole was a thin strip in a black screen. Give it half the screen's height
+     (cropping its outer edges) and set the two labels right on top of it */
+  .plate { width: max(100%, calc(52svh * 16 / 9)); top: 50%; }
+  .sides { top: calc(50% - 26svh + var(--s-3)); }
 }
 
 /* section frame */
@@ -244,7 +245,7 @@ section { padding-block: var(--sp-section); }
 .tile p { color: var(--fg-dim); font-size: 16px; line-height: 1.55; max-width: 32em; }
 /* what the feature covers, as a readout line under its words */
 .tags { display: flex; flex-wrap: wrap; gap: var(--s-1) 1.75em; list-style: none; margin: var(--s-1) 0 0; padding: 0; max-width: 32em; }
-.tags li { font: 400 13px/1.7 var(--mono); color: var(--fg-dim); }
+.tags li { font: 400 14px/1.7 var(--display); color: var(--fg-dim); }
 .row-media { aspect-ratio: 4 / 3; border-radius: var(--r-m); overflow: hidden; background: #000; border: 1px solid var(--line); }
 .row-media video { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform 0.6s cubic-bezier(0.2, 0.8, 0.2, 1); }
 .tile:hover .row-media video { transform: scale(1.025); }
@@ -274,10 +275,10 @@ section { padding-block: var(--sp-section); }
   .bento6 .tile[style*="grid-area: f"] { grid-area: 1 / 2 / 3 / 3 !important; }
 }
 @media (min-width: 901px) and (hover: hover) {
-  /* the rest step back: blurred and dimmed, so the one under the cursor is the only one in focus */
-  .bento6 .row-media, .bento6 .tile-copy { transition: filter 0.7s ease 0.1s, opacity 0.7s ease 0.1s; }
-  .bento6:has(.tile:hover) .tile:not(:hover) .row-media { filter: blur(6px) brightness(0.55); transition-delay: 0s; }
-  .bento6:has(.tile:hover) .tile:not(:hover) .tile-copy { opacity: 0.35; transition-delay: 0s; }
+  /* the rest step back a little, dimmed but still readable: blurring five of six clips hid the very thing you compare */
+  .bento6 .row-media, .bento6 .tile-copy { transition: filter 0.5s ease 0.1s, opacity 0.5s ease 0.1s; }
+  .bento6:has(.tile:hover) .tile:not(:hover) .row-media { filter: brightness(0.7); transition-delay: 0s; }
+  .bento6:has(.tile:hover) .tile:not(:hover) .tile-copy { opacity: 0.7; transition-delay: 0s; }
   .bento6 .tile:hover .row-media video { transform: none; }
 }
 @media (min-width: 901px) and (prefers-reduced-motion: reduce) {
@@ -319,7 +320,7 @@ section { padding-block: var(--sp-section); }
 .how-tab::before { content: ""; position: absolute; left: 0; top: -1px; height: 2px; width: calc(var(--t, 0) * 100%); background: var(--teal); }
 .how-tab:not([aria-selected="true"])::before { display: none; }
 .how-tab:focus-visible { outline: 2px solid var(--teal); outline-offset: 6px; }
-.how-tab .n { font-family: var(--mono); font-size: 12px; font-weight: 500; font-variant-numeric: tabular-nums; color: var(--fg-dim); transition: color 0.25s; }
+.how-tab .n { font-family: var(--display); font-size: 13px; font-weight: 500; font-variant-numeric: tabular-nums; color: var(--fg-dim); transition: color 0.25s; }
 .how-tab b { font-weight: 600; font-size: var(--t-title); letter-spacing: -0.01em; line-height: 1.25; transition: color 0.25s; }
 .how-tab .d { font-size: 15px; line-height: 1.55; max-width: 30em; color: var(--fg-dim); opacity: 0.7; transition: opacity 0.25s; }
 .how-tab:hover b, .how-tab[aria-selected="true"] b { color: var(--fg); }
@@ -349,7 +350,7 @@ section { padding-block: var(--sp-section); }
 .studio-win { border: 1px solid var(--line); border-radius: var(--r-m); overflow: hidden; background: #15181d; box-shadow: 0 40px 90px rgba(0, 0, 0, 0.5); }
 .studio-bar { height: 36px; display: flex; align-items: center; gap: var(--s-2); padding: 0 var(--s-3); background: #1d2128; border-bottom: 1px solid rgba(255, 255, 255, 0.06); }
 .studio-bar i { width: 11px; height: 11px; border-radius: 50%; background: #3a3f48; }
-.studio-bar span { flex: 1; text-align: left; font: 400 12px/1 var(--mono); color: var(--fg-dim); margin-right: 40px; }
+.studio-bar span { flex: 1; text-align: left; font: 500 13px/1 var(--display); color: var(--fg-dim); margin-right: 40px; }
 .studio-reset { background: none; border: 0; color: var(--fg-dim); font-size: 16px; width: 28px; height: 28px; border-radius: 6px; cursor: pointer; }
 .studio-reset:hover { color: var(--fg); background: rgba(255, 255, 255, 0.06); }
 .studio-view { position: relative; overflow: hidden; aspect-ratio: 16 / 9; }
@@ -407,14 +408,15 @@ section { padding-block: var(--sp-section); }
 .sec-head { display: grid; gap: var(--s-4); max-width: 40rem; }
 .sec-head h2 { font-size: var(--t-h2); margin: 0; }
 .sec-head p { margin: 0; color: var(--fg-dim); font-size: clamp(16px, 1.3vw, 19px); line-height: 1.5; }
-.sec-head .eyebrow { font: 400 13px/1.4 var(--mono); color: var(--teal); }
-.privacy .top { margin-top: var(--sp-section); }
+.sec-head .eyebrow { font: 500 14px/1.4 var(--display); color: var(--teal); }
+/* the heading opens the section; the network drawing comes under it */
+.privacy .top { margin-bottom: var(--sp-block); }
 /* the PC and the headset, drawn, trading real data inside one frame: the lab network, with no line out of it */
 .lab { position: relative; margin-top: 0; display: grid; align-items: center;
   grid-template-columns: minmax(0, 3fr) minmax(0, 5fr) minmax(0, 3fr); gap: var(--gutter);
   padding: clamp(var(--s-7), 6vw, var(--s-9)) clamp(var(--s-5), 4vw, var(--s-8)) clamp(var(--s-6), 4vw, var(--s-8)); }
 .lab-frame { position: absolute; inset: 0; border: 1px solid var(--line); border-radius: var(--r-l); pointer-events: none; }
-.lab-tag { position: absolute; top: var(--s-4); left: var(--s-5); font: 400 12px/1.4 var(--mono); color: var(--fg-dim); }
+.lab-tag { position: absolute; top: var(--s-4); left: var(--s-5); font: 500 13px/1.4 var(--display); color: var(--fg-dim); }
 .lab-tag-r { left: auto; right: var(--s-5); opacity: 0.7; }
 /* devices on the first row, their words on the second, so both titles share a line whatever the drawing's height */
 .lab { grid-template-rows: auto auto; row-gap: var(--s-5); }
@@ -432,24 +434,15 @@ section { padding-block: var(--sp-section); }
 .dev .hi { stroke: var(--teal); }
 .lab-node figcaption { display: grid; gap: var(--s-1); font-size: 15px; line-height: 1.5; color: var(--fg-dim); max-width: 18em; }
 .lab-node figcaption b { color: var(--fg); font-weight: 600; font-size: var(--t-title); }
-/* two lanes, one each way; what travels is named, the way it would show in a log */
-.lanes { display: grid; gap: var(--s-6); }
-.lane { display: grid; gap: var(--s-2); }
-.lane-lbl { font: 400 12px/1 var(--mono); color: var(--fg-dim); }
-.to-pc .lane-lbl { justify-self: end; }
-.lane-track { position: relative; height: 34px; container-type: inline-size; overflow: hidden;
-  -webkit-mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent); mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent); }
-.lane-track span { position: absolute; top: 50%; left: 0; white-space: nowrap; font: 500 12px/1 var(--mono); padding: 8px 10px; border-radius: 3px;
-  background: #0b0d10; border: 1px solid var(--line); color: var(--fg); translate: 0 -50%; }
-.to-hs .lane-track span { border-color: rgba(47, 191, 160, 0.5); }
-@media (prefers-reduced-motion: no-preference) {
-  .lane-track span { animation: lane-go 10s linear infinite; animation-delay: calc(var(--k) * -2.5s); }
-  .to-pc .lane-track span { animation-direction: reverse; animation-delay: calc(var(--k) * -2.5s - 1.25s); }
-}
-@keyframes lane-go { from { transform: translateX(-100%); } to { transform: translateX(100cqw); } }
-@media (prefers-reduced-motion: reduce) {
-  .lane-track span { left: calc(var(--k) * 25%); }
-}
+/* one line each way, named in plain words; nothing moves */
+.lanes { display: grid; gap: var(--s-7); align-content: center; }
+.flow { display: grid; gap: var(--s-3); }
+.flow p { margin: 0; font-size: 15px; line-height: 1.4; color: var(--fg-dim); text-align: center; }
+.wire { position: relative; height: 1px; background: rgba(238, 241, 239, 0.4); }
+.wire::after { content: ""; position: absolute; top: -4px; width: 8px; height: 8px; border-top: 1px solid; border-right: 1px solid; }
+.to-hs .wire { background: var(--teal); }
+.to-hs .wire::after { right: 0; transform: rotate(45deg); border-color: var(--teal); }
+.to-pc .wire::after { left: 0; transform: rotate(-135deg); border-color: rgba(238, 241, 239, 0.6); }
 @media (max-width: 760px) {
   .lab { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); padding: var(--s-8) var(--s-4) var(--s-5); row-gap: var(--s-6); }
   .lanes { grid-column: 1 / -1; grid-row: 3; }
@@ -471,106 +464,121 @@ section { padding-block: var(--sp-section); }
 .sheet .head h2 { margin-top: 0; }
 /* team: a short head (eyebrow, line, who does what), then the two circles overlapping by half with the person in front
    described right beside them. They take turns; clicking the one behind brings it forward, the one in front opens its page. */
-.team-row { margin-top: var(--sp-block); display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--s-6) var(--gutter); align-items: center; }
-.team-row .stack { grid-column: 1; }
-.team-row .team-who { grid-column: 2 / 4; max-width: 36rem; }
-.stack { position: relative; width: calc(var(--av) + var(--av-shift)); height: var(--av); --av: 152px; --av-shift: 92px; }
-.av { position: absolute; left: 0; top: 0; width: var(--av); height: var(--av); border-radius: 50%; display: grid; place-items: center; text-decoration: none;
-  background: var(--ink-raised); border: 1px solid var(--line); box-shadow: 0 0 0 5px var(--ink);
-  transition: transform 0.9s cubic-bezier(0.65, 0, 0.35, 1), filter 0.9s ease; }
-.av::before { content: attr(data-i); font: 500 38px/1 var(--mono); color: var(--fg); }
+/* team: both people at once, side by side, each with the same portrait, name, role, line and link. Nothing rotates:
+   the reader decides who to read first. */
+.team-row { margin-top: var(--sp-block); display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--s-7) var(--gutter); }
+.who-card { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: var(--s-5); align-items: stretch; }
+.who-card .av { align-self: start; }
+/* the bios differ in length: the links sit on the cards' shared bottom edge, so they line up side by side */
+.who-text .btn { margin-top: auto; }
+.av { position: relative; width: var(--av); height: var(--av); --av: 120px; border-radius: 50%; display: grid; place-items: center; text-decoration: none;
+  background: var(--ink-raised); border: 1px solid var(--line); transition: border-color 0.2s; }
+.who-card:hover .av { border-color: var(--fg-dim); }
+.av::before { content: attr(data-i); font: 500 36px/1 var(--display); color: var(--fg); }
 .av img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; border-radius: 50%; }
-.av.is-front { z-index: 2; transform: none; }
-.av.is-back { z-index: 1; transform: translateX(var(--av-shift)) scale(0.92); filter: brightness(0.55); }
-.av.is-back:hover { filter: brightness(0.8); }
-.team-who { display: grid; }
-.who-card { grid-area: 1 / 1; display: grid; gap: var(--s-2); align-content: center; justify-items: start; opacity: 0; transform: translateY(8px); visibility: hidden;
-  transition: opacity 0.5s ease, transform 0.6s cubic-bezier(0.2, 0.8, 0.2, 1), visibility 0s 0.6s; }
-.who-card.is-on { opacity: 1; transform: none; visibility: visible; transition-delay: 0.25s, 0.25s, 0s; }
+.who-text { display: flex; flex-direction: column; align-items: flex-start; gap: var(--s-2); max-width: 28rem; }
 .who-card h3 { margin: 0; font-size: var(--t-h3); letter-spacing: -0.02em; line-height: 1.05; }
-.who-role { margin: 0 0 var(--s-2); font: 400 13px/1.4 var(--mono); color: var(--teal); }
-.who-card p:not(.who-role) { margin: 0 0 var(--s-2); color: var(--fg-dim); }
-@media (max-width: 760px) { .team-row { grid-template-columns: 1fr; gap: var(--s-6); } .team-row .team-who { grid-column: 1; } .stack { --av: 112px; --av-shift: 68px; } }
-@media (prefers-reduced-motion: reduce) { .av, .who-card { transition: none; } }
+.who-role { margin: 0 0 var(--s-2); font: 500 14px/1.4 var(--display); color: var(--teal); }
+.who-text p:not(.who-role) { margin: 0 0 var(--s-2); color: var(--fg-dim); }
+@media (max-width: 900px) { .team-row { grid-template-columns: 1fr; } }
+@media (max-width: 480px) { .who-card { grid-template-columns: 1fr; gap: var(--s-4); } .av { --av: 88px; } .av::before { font-size: 28px; } }
+@media (prefers-reduced-motion: reduce) { .av { transition: none; } }
 .legal { margin-top: var(--s-5); font-size: 13px; color: var(--fg-dim); }
 
 /* contact */
 .contact .grid { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); gap: var(--sp-block) var(--gutter); align-items: start; }
-.contact .grid > div { grid-column: 1 / span 5; }
-.contact .grid > form { grid-column: 7 / -1; }
-.contact h2 { font-size: var(--t-h2); }
-.contact .grid > div > p { color: var(--fg-dim); margin-top: var(--s-5); max-width: 30em; }
+/* feedback: the ask on the left; on the right what the survey covers, as a numbered list ruled like a form,
+   so a visitor knows what they are agreeing to before leaving the page */
+.contact .grid > div:first-child { grid-column: 1 / span 6; }
+.contact .grid > .asks { grid-column: 8 / -1; }
+.contact h2 { font-size: var(--t-h2); max-width: 13em; }
+.contact .grid > div > p:not(.fb-note) { color: var(--fg-dim); margin-top: var(--s-5); max-width: 30em; font-size: 18px; }
 .contact .grid > div > .ctas { margin-top: var(--s-6); }
-form { display: grid; gap: var(--s-4); }
-.field { display: grid; gap: var(--s-2); }
-.field label { font-size: var(--t-small); font-weight: 500; line-height: 1.2; color: var(--fg-dim); }
-input, textarea { font: 400 16px/1.4 var(--display); color: var(--fg); background: rgba(255, 255, 255, 0.04); border: 1px solid var(--line); border-radius: var(--r-s); padding: var(--s-3) var(--s-4); width: 100%; }
-input:focus, textarea:focus { outline: none; border-color: var(--teal); }
-textarea { min-height: 110px; resize: vertical; }
-.row2 { display: grid; grid-template-columns: 1fr 1fr; gap: var(--s-4); }
-.note { font-size: 14px; color: var(--fg-dim); min-height: 1.4em; }
-@media (max-width: 820px) { .contact .grid > div, .contact .grid > form { grid-column: 1 / -1; } }
-@media (max-width: 480px) { .row2 { grid-template-columns: 1fr; } }
+.fb-note { margin-top: var(--s-3); font-size: 14px; color: var(--fg-dim); }
+.fb-note:empty { display: none; }
+.asks h3 { font-size: 14px; font-weight: 600; letter-spacing: 0; color: var(--fg-dim); margin-bottom: var(--s-3); }
+.asks ol { list-style: none; margin: 0; padding: 0; counter-reset: ask; border-top: 1px solid var(--line); }
+.asks li { counter-increment: ask; display: grid; grid-template-columns: 2.25em minmax(0, 1fr); column-gap: var(--s-2); padding: var(--s-4) 0; border-bottom: 1px solid var(--line); color: var(--fg-dim); font-size: 16px; line-height: 1.5; }
+.asks li::before { content: counter(ask); grid-row: 1 / 3; font-variant-numeric: tabular-nums; color: var(--teal); font-weight: 500; }
+.asks li b { color: var(--fg); font-weight: 600; }
+.asks > p { margin-top: var(--s-4); font-size: 14px; color: var(--fg-dim); max-width: 34em; }
+@media (max-width: 820px) { .contact .grid > div:first-child, .contact .grid > .asks { grid-column: 1 / -1; } }
 
-footer { padding-block: var(--s-6); color: var(--fg-dim); font-size: 14px; }
-footer .wrap { display: flex; flex-wrap: wrap; gap: var(--s-4) var(--s-6); align-items: center; }
-footer .brand { color: var(--fg); }
-footer .tag { margin-left: auto; font-weight: 600; color: var(--fg); }
-@media (max-width: 600px) { footer .tag { margin-left: 0; } }
+/* footer: who we are, where things are, the legal lines; four columns that fold to two, then one */
+footer { padding: var(--s-9) 0 var(--s-6); color: var(--fg-dim); font-size: 15px; background: #08090b; }
+.foot { display: grid; grid-template-columns: minmax(0, 5fr) repeat(3, minmax(0, 2fr)); gap: var(--s-7) var(--gutter); }
+.foot-brand { display: grid; gap: var(--s-4); align-content: start; }
+.foot-brand .brand { color: var(--fg); }
+.foot-brand p { margin: 0; max-width: 24em; line-height: 1.55; }
+.foot-col { display: grid; gap: var(--s-2); align-content: start; }
+.foot-col h3 { margin: 0 0 var(--s-2); font-size: 14px; font-weight: 600; color: var(--fg); letter-spacing: 0; }
+.foot-col a { color: var(--fg-dim); text-decoration: none; width: fit-content; min-height: 32px; display: inline-flex; align-items: center; }
+.foot-col a:hover { color: var(--fg); }
+.foot-col span { min-height: 32px; display: inline-flex; align-items: center; }
+.foot-demo { margin: 0; line-height: 1.55; max-width: 18em; }
+.foot-base { grid-column: 1 / -1; display: flex; flex-wrap: wrap; justify-content: space-between; gap: var(--s-3) var(--s-6); padding-top: var(--s-5); font-size: 14px; }
+@media (max-width: 900px) { .foot { grid-template-columns: repeat(3, minmax(0, 1fr)); } .foot-brand { grid-column: 1 / -1; } }
+@media (max-width: 560px) { .foot { grid-template-columns: 1fr 1fr; } .foot-col:last-of-type { grid-column: 1 / -1; } }
 
 @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
 </style>
 </head>
 <body>
-<nav class="nav" aria-label="Main">
+<svg class="goo-defs" width="0" height="0" aria-hidden="true" focusable="false" style="position:absolute"><filter id="goo" x="-20%" y="-50%" width="140%" height="200%"><feGaussianBlur in="SourceGraphic" stdDeviation="5" result="b"/><feColorMatrix in="b" mode="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 22 -10"/></filter></svg>
+<nav class="nav" aria-label="Main" data-i18n-attr="aria-label:nav.label">
   <div class="wrap">
-    <a class="brand" href="#top"><img src="media/veyra.svg" alt="" width="44" height="27"><span class="brand-word">Veyra</span></a>
+    <a class="brand" href="#top"><img src="media/veyra-light.svg" alt="" width="44" height="27"><span class="brand-word">Veyra</span></a>
     <div class="nav-links">
       <span class="nav-hl" aria-hidden="true"></span>
-      <a href="#fig1">At the bench</a>
-      <a href="#desk">At the desk</a>
-      <a href="#try">Try Studio</a>
-      <a href="#team">Team</a>
+      <a href="#fig1" data-i18n="nav.bench">At the bench</a>
+      <a href="#desk" data-i18n="nav.desk">At the desk</a>
+      <a href="#try" data-i18n="nav.try">Try Studio</a>
+      <a href="#team" data-i18n="nav.team">Team</a>
     </div>
-    <a class="btn btn-solid" href="#contact">Bring it to your lab</a>
+    <div class="lang" role="group" aria-label="Language" data-i18n-attr="aria-label:lang.label">
+      <button type="button" data-lang="en" lang="en" aria-label="English">EN</button>
+      <button type="button" data-lang="it" lang="it" aria-label="Italiano">IT</button>
+    </div>
+    <a class="btn btn-solid btn-sm" data-go="down" href="#feedback"><span class="btn-goo" aria-hidden="true"><i class="goo-pill"></i><i class="goo-dot"></i></span><span class="btn-label" data-i18n="cta.feedback">Give us feedback</span><span class="btn-port" aria-hidden="true"><svg viewBox="0 0 16 16"><path d="M2.5 8h11M9 3.5 13.5 8 9 12.5"/></svg></span></a>
     <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="nav-menu" aria-label="Menu"><svg class="bars" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg><svg class="x" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
     <div class="nav-menu" id="nav-menu">
-      <a href="#fig1">At the bench</a>
-      <a href="#desk">At the desk</a>
-      <a href="#try">Try Studio</a>
-      <a href="#team">Team</a>
-      <a class="btn btn-solid" href="#contact">Bring it to your lab</a>
+      <a href="#fig1" data-i18n="nav.bench">At the bench</a>
+      <a href="#desk" data-i18n="nav.desk">At the desk</a>
+      <a href="#try" data-i18n="nav.try">Try Studio</a>
+      <a href="#team" data-i18n="nav.team">Team</a>
+      <a class="btn btn-solid" data-go="down" href="#feedback"><span class="btn-goo" aria-hidden="true"><i class="goo-pill"></i><i class="goo-dot"></i></span><span class="btn-label" data-i18n="cta.feedback">Give us feedback</span><span class="btn-port" aria-hidden="true"><svg viewBox="0 0 16 16"><path d="M2.5 8h11M9 3.5 13.5 8 9 12.5"/></svg></span></a>
     </div>
   </div>
 </nav>
 
 <section class="intro" id="top" aria-label="Veyra">
-  <span id="fig1" style="position:absolute;top:105svh" aria-hidden="true"></span>
+  <span id="fig1" style="position:absolute;top:80svh" aria-hidden="true"></span>
   <div class="intro-stage">
     <div class="hero-layer">
     <video class="intro-video" id="intro-video" muted loop playsinline preload="auto" poster="media/hero-poster.jpg" aria-hidden="true"><source src="media/hero.mp4" type="video/mp4"></video>
     <div class="intro-shade"></div>
     <div class="intro-copy wrap">
       <div class="intro-main">
-        <h1><span class="ln"><span class="ln-i">Hands-free lab assistant.</span></span></h1>
-        <p class="lede up" style="--i: 0">Your procedure, beside the instrument. On Meta Quest&nbsp;3 and&nbsp;3S.</p>
-        <div class="ctas up" style="--i: 1">
-          <a class="btn btn-solid" href="#try">Try Studio in your browser</a>
-          <a class="text-link" href="#contact">Bring it to your lab <span aria-hidden="true">&rarr;</span></a>
+        <h1 class="intro-name"><span class="ln"><span class="ln-i">Veyra</span></span></h1>
+        <p class="intro-tag up" style="--i: 0" data-i18n="hero.tag">The hands-free lab assistant.</p>
+        <p class="lede up" style="--i: 1" data-i18n="hero.lede">Your procedure, beside the instrument. On Meta Quest&nbsp;3 and&nbsp;3S.</p>
+        <div class="ctas up" style="--i: 2">
+          <a class="btn btn-solid" data-go="down" href="#try"><span class="btn-goo" aria-hidden="true"><i class="goo-pill"></i><i class="goo-dot"></i></span><span class="btn-label" data-i18n="cta.try">Try Studio in your browser</span><span class="btn-port" aria-hidden="true"><svg viewBox="0 0 16 16"><path d="M2.5 8h11M9 3.5 13.5 8 9 12.5"/></svg></span></a>
+          <a class="btn btn-line" data-go="down" href="#feedback"><span class="btn-goo" aria-hidden="true"><i class="goo-pill"></i><i class="goo-dot"></i></span><span class="btn-label" data-i18n="cta.feedback">Give us feedback</span><span class="btn-port" aria-hidden="true"><svg viewBox="0 0 16 16"><path d="M2.5 8h11M9 3.5 13.5 8 9 12.5"/></svg></span></a>
         </div>
       </div>
     </div>
-    
+
     </div>
     <div class="lens" id="lens">
       <div class="plate" id="plate">
-        <img class="bare" src="media/bench-bare.jpg" draggable="false" width="2400" height="1350" alt="View through the headset at a lab bench with nothing open: shelves, pipettes and a laptop.">
+        <img class="bare" src="media/bench-bare.jpg" draggable="false" width="2400" height="1350" alt="View through the headset at a lab bench with nothing open: shelves, pipettes and a laptop." data-i18n-attr="alt:cmp.bareAlt">
         <div class="with">
-        <img src="media/workspace-full.jpg" draggable="false" width="2400" height="1350" alt="View through the headset at a pH-meter bench: a procedure step, a checklist, a PDF, a calculator, a 3D protein, a timer and a structure drawing panel float around the real instrument.">
+        <img src="media/workspace-full.jpg" draggable="false" width="2400" height="1350" alt="View through the headset at a pH-meter bench: a procedure step, a checklist, a PDF, a calculator, a 3D protein, a timer and a structure drawing panel float around the real instrument." data-i18n-attr="alt:cmp.withAlt">
         </div>
-        <div class="split"><span class="knob" id="knob" role="slider" tabindex="0" aria-label="Compare the bench without and with Veyra" aria-valuemin="0" aria-valuemax="100" aria-valuenow="50">‹›</span></div>
+        <div class="split"><span class="knob" id="knob" role="slider" tabindex="0" aria-label="Compare the bench without and with Veyra" data-i18n-attr="aria-label:cmp.knob" aria-valuemin="0" aria-valuemax="100" aria-valuenow="50">‹›</span></div>
       </div>
-      <div class="sides" aria-hidden="true"><span>Without Veyra</span><span>With Veyra</span></div>
+      <div class="sides" aria-hidden="true"><span data-i18n="cmp.without">Without Veyra</span><span data-i18n="cmp.with">With Veyra</span></div>
       <div class="follow" aria-hidden="true"><svg viewBox="0 0 16 16"><path d="M14.082 2.182a.5.5 0 0 1 .103.557L8.528 15.467a.5.5 0 0 1-.917-.007L5.57 10.694.803 8.652a.5.5 0 0 1-.006-.916l12.728-5.657a.5.5 0 0 1 .556.103z"/></svg><span>With Veyra</span></div>
     </div>
   </div>
@@ -580,36 +588,36 @@ footer .tag { margin-left: auto; font-weight: 600; color: var(--fg); }
   <section id="bench" class="bench">
     <div class="wrap">
       <div class="head head-row">
-        <h2>Eyes on the bench. Hands on the work.</h2>
-        <div class="head-side"><p>Every clip recorded through the headset, in a real lab.</p></div>
+        <h2 data-i18n="bench.h">Eyes on the bench. Hands on the work.</h2>
+        <div class="head-side"><p data-i18n="bench.p">Every clip recorded through the headset, in a real lab.</p></div>
       </div>
       <div class="bento6">
         <div class="bhalf bhalf-top">
         <article class="tile" style="grid-area: a">
-          <div class="row-media"><video data-feat muted loop playsinline preload="none" poster="media/f-step.jpg" aria-label="Through the headset: the step for the pH 4.01 standard above the pH meter while gloved hands hold the electrode"><source src="media/f-step.mp4" type="video/mp4"></video></div>
-          <div class="tile-copy"><h3>One step at a time</h3><p>The current step floats above the instrument.</p></div>
+          <div class="row-media"><video data-feat muted loop playsinline preload="none" poster="media/f-step.jpg" aria-label="Through the headset: the step for the pH 4.01 standard above the pH meter while gloved hands hold the electrode" data-i18n-attr="aria-label:f1.v"><source src="media/f-step.mp4" type="video/mp4"></video></div>
+          <div class="tile-copy"><h3 data-i18n="f1.h">One step at a time</h3><p data-i18n="f1.p">The current step floats above the instrument.</p></div>
         </article>
         <article class="tile" style="grid-area: b">
-          <div class="row-media"><video data-feat muted loop playsinline preload="none" poster="media/f-checklist.jpg" aria-label="Through the headset: a fingertip ticking items on the protective equipment checklist"><source src="media/f-checklist.mp4" type="video/mp4"></video></div>
-          <div class="tile-copy"><h3>Checks before you start</h3><p>PPE and set-up, ticked off with a fingertip.</p></div>
+          <div class="row-media"><video data-feat muted loop playsinline preload="none" poster="media/f-checklist.jpg" aria-label="Through the headset: a fingertip ticking items on the protective equipment checklist" data-i18n-attr="aria-label:f2.v"><source src="media/f-checklist.mp4" type="video/mp4"></video></div>
+          <div class="tile-copy"><h3 data-i18n="f2.h">Checks before you start</h3><p data-i18n="f2.p">PPE and set-up, ticked off with a fingertip.</p></div>
         </article>
         <article class="tile" style="grid-area: c">
-          <div class="row-media"><video data-feat muted loop playsinline preload="none" poster="media/f-readings.jpg" aria-label="Through the headset: calibration readings typed on the floating keyboard and marked as accepted"><source src="media/f-readings.mp4" type="video/mp4"></video></div>
-          <div class="tile-copy"><h3>Readings checked on the spot</h3><p>Each value checked against its limits as you enter it.</p></div>
+          <div class="row-media"><video data-feat muted loop playsinline preload="none" poster="media/f-readings.jpg" aria-label="Through the headset: calibration readings typed on the floating keyboard and marked as accepted" data-i18n-attr="aria-label:f3.v"><source src="media/f-readings.mp4" type="video/mp4"></video></div>
+          <div class="tile-copy"><h3 data-i18n="f3.h">Readings checked on the spot</h3><p data-i18n="f3.p">Each value checked against its limits as you enter it.</p></div>
         </article>
         </div>
         <div class="bhalf bhalf-bot">
         <article class="tile" style="grid-area: d">
-          <div class="row-media"><video data-feat muted loop playsinline preload="none" poster="media/f-menu.jpg" aria-label="Through the headset: the Veyra menu with calculator, graph, browser, structure drawing, timer, note, assistant and archive"><source src="media/f-menu.mp4" type="video/mp4"></video></div>
-          <div class="tile-copy"><h3>Everything from one menu</h3><p>Calculator, timer, notes, assistant. One tap away.</p></div>
+          <div class="row-media"><video data-feat muted loop playsinline preload="none" poster="media/f-menu.jpg" aria-label="Through the headset: the Veyra menu with calculator, graph, browser, structure drawing, timer, note, assistant and archive" data-i18n-attr="aria-label:f4.v"><source src="media/f-menu.mp4" type="video/mp4"></video></div>
+          <div class="tile-copy"><h3 data-i18n="f4.h">Everything from one menu</h3><p data-i18n="f4.p">Calculator, timer, notes, assistant. One tap away.</p></div>
         </article>
         <article class="tile" style="grid-area: e">
-          <div class="row-media"><video data-feat muted loop playsinline preload="none" poster="media/f-draw.jpg" aria-label="Through the headset: a benzene ring drawn and a chain added on the structure drawing panel"><source src="media/f-draw.mp4" type="video/mp4"></video></div>
-          <div class="tile-copy"><h3>Draw a molecule</h3><p>Sketch a structure with a fingertip.</p></div>
+          <div class="row-media"><video data-feat muted loop playsinline preload="none" poster="media/f-draw.jpg" aria-label="Through the headset: a benzene ring drawn and a chain added on the structure drawing panel" data-i18n-attr="aria-label:f5.v"><source src="media/f-draw.mp4" type="video/mp4"></video></div>
+          <div class="tile-copy"><h3 data-i18n="f5.h">Draw a molecule</h3><p data-i18n="f5.p">Sketch a structure with a fingertip.</p></div>
         </article>
         <article class="tile" style="grid-area: f">
-          <div class="row-media"><video data-feat muted loop playsinline preload="none" poster="media/f-structure.jpg" aria-label="Through the headset: an RCSB entry opened and its protein structure shown in 3D"><source src="media/f-structure.mp4" type="video/mp4"></video></div>
-          <div class="tile-copy"><h3>Any structure from RCSB</h3><p>Open a PDB entry in 3D and turn it by hand.</p></div>
+          <div class="row-media"><video data-feat muted loop playsinline preload="none" poster="media/f-structure.jpg" aria-label="Through the headset: an RCSB entry opened and its protein structure shown in 3D" data-i18n-attr="aria-label:f6.v"><source src="media/f-structure.mp4" type="video/mp4"></video></div>
+          <div class="tile-copy"><h3 data-i18n="f6.h">Any structure from RCSB</h3><p data-i18n="f6.p">Open a PDB entry in 3D and turn it by hand.</p></div>
         </article>
         </div>
       </div>
@@ -620,20 +628,20 @@ footer .tag { margin-left: auto; font-weight: 600; color: var(--fg); }
     <div class="wrap">
       <div class="how" id="how">
         <div class="head head-row">
-          <h2>From your Word file to the headset.</h2>
-          <div class="head-side"><p>Written and checked at the desk. Never edited at the bench.</p></div>
+          <h2 data-i18n="desk.h">From your Word file to the headset.</h2>
+          <div class="head-side"><p data-i18n="desk.p">Written and checked at the desk. Never edited at the bench.</p></div>
         </div>
         <div class="how-stage">
           <div class="how-view" id="how-view" role="tabpanel">
-            <video class="on" muted playsinline preload="none" poster="media/studio-8.jpg" aria-label="Veyra Studio's import dialog: a .docx procedure is dropped in and imported"><source src="media/studio-import.mp4" type="video/mp4"></video>
-            <video muted playsinline preload="none" poster="media/studio-24.jpg" aria-label="Setting a slope limit of 95 to 102 percent in Veyra Studio"><source src="media/studio-limits.mp4" type="video/mp4"></video>
-            <video muted playsinline preload="none" poster="media/studio-38.jpg" aria-label="Warnings clear to no problems, then Publish is clicked in Veyra Studio"><source src="media/studio-publish.mp4" type="video/mp4"></video>
+            <video class="on" muted playsinline preload="none" poster="media/studio-8.jpg" aria-label="Veyra Studio's import dialog: a .docx procedure is dropped in and imported" data-i18n-attr="aria-label:s1.v"><source src="media/studio-import.mp4" type="video/mp4"></video>
+            <video muted playsinline preload="none" poster="media/studio-24.jpg" aria-label="Setting a slope limit of 95 to 102 percent in Veyra Studio" data-i18n-attr="aria-label:s2.v"><source src="media/studio-limits.mp4" type="video/mp4"></video>
+            <video muted playsinline preload="none" poster="media/studio-38.jpg" aria-label="Warnings clear to no problems, then Publish is clicked in Veyra Studio" data-i18n-attr="aria-label:s3.v"><source src="media/studio-publish.mp4" type="video/mp4"></video>
           </div>
         </div>
-        <div class="how-tabs" role="tablist" aria-label="From the document to the headset">
-          <button class="how-tab" type="button" role="tab" aria-selected="true" aria-controls="how-view"><span class="n">Step 1</span><b>Import</b><span class="d">A local model drafts the steps. Every number arrives flagged to verify.</span></button>
-          <button class="how-tab" type="button" role="tab" aria-selected="false" aria-controls="how-view"><span class="n">Step 2</span><b>Set the limits</b><span class="d">Name each reading and what counts as right: <q>Slope between 95 and 102&nbsp;%</q>.</span></button>
-          <button class="how-tab" type="button" role="tab" aria-selected="false" aria-controls="how-view"><span class="n">Step 3</span><b>Publish</b><span class="d">When the checks are clean, one click sends it to every headset.</span></button>
+        <div class="how-tabs" role="tablist" aria-label="From the document to the headset" data-i18n-attr="aria-label:desk.tabs">
+          <button class="how-tab" type="button" role="tab" aria-selected="true" aria-controls="how-view"><span class="n" data-i18n="s1.n">Step 1</span><b data-i18n="s1.h">Import</b><span class="d" data-i18n="s1.d">A local model drafts the steps. Every number arrives flagged to verify.</span></button>
+          <button class="how-tab" type="button" role="tab" aria-selected="false" aria-controls="how-view"><span class="n" data-i18n="s2.n">Step 2</span><b data-i18n="s2.h">Set the limits</b><span class="d" data-i18n="s2.d">Name each reading and what counts as right: <q>Slope between 95 and 102&nbsp;%</q>.</span></button>
+          <button class="how-tab" type="button" role="tab" aria-selected="false" aria-controls="how-view"><span class="n" data-i18n="s3.n">Step 3</span><b data-i18n="s3.h">Publish</b><span class="d" data-i18n="s3.d">When the checks are clean, one click sends it to every headset.</span></button>
         </div>
       </div>
     </div>
@@ -643,12 +651,12 @@ footer .tag { margin-left: auto; font-weight: 600; color: var(--fg); }
         <div class="cscroll" id="cscroll"><div class="cscroll-in">
         <div class="try-head cs-head">
           <div>
-            <h3>Studio, running in this page.</h3>
-            <p>The real app. Take the <b>Tour</b>, or build one in <b>Guided</b>.</p>
+            <h3 data-i18n="try.h">Studio, running in this page.</h3>
+            <p data-i18n="try.p">The real app. Take the <b>Tour</b>, or build one in <b>Guided</b>.</p>
           </div>
           <div class="studio-tabs" role="tablist" aria-label="Tutorial">
-            <button role="tab" aria-selected="true" data-open="example"><b>Tour</b>A real procedure</button>
-            <button role="tab" aria-selected="false" data-open="guided"><b>Guided</b>Build one</button>
+            <button role="tab" aria-selected="true" data-open="example" data-i18n="try.tab1"><b>Tour</b>A real procedure</button>
+            <button role="tab" aria-selected="false" data-open="guided" data-i18n="try.tab2"><b>Guided</b>Build one</button>
           </div>
         </div>
         <div class="cs-card">
@@ -661,17 +669,17 @@ footer .tag { margin-left: auto; font-weight: 600; color: var(--fg); }
             <line x1="56" y1="52" x2="132" y2="52"/><rect x="56" y="62" width="40" height="10" rx="2"/><rect x="104" y="74" width="34" height="9" rx="2" class="hi"/>
         </svg>
         <div class="studio-win">
-          <div class="studio-bar"><span>Veyra Studio &middot; app in Italian, tutorials in English</span><button class="studio-full" type="button" title="Full screen" aria-label="Full screen" aria-pressed="false"><svg class="in" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M2 6V2h4M10 2h4v4M14 10v4h-4M6 14H2v-4"/></svg><svg class="out" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M6 2v4H2M14 6h-4V2M10 14v-4h4M2 10h4v4"/></svg></button><button class="studio-reset" type="button" title="Restart the tutorial" aria-label="Restart the tutorial">↺</button></div>
+          <div class="studio-bar"><span data-i18n="try.bar">Live demo</span><button class="studio-full" type="button" title="Full screen" aria-label="Full screen" data-i18n-attr="title:try.fsOn,aria-label:try.fsOn" aria-pressed="false"><svg class="in" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M2 6V2h4M10 2h4v4M14 10v4h-4M6 14H2v-4"/></svg><svg class="out" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M6 2v4H2M14 6h-4V2M10 14v-4h4M2 10h4v4"/></svg></button><button class="studio-reset" type="button" title="Restart the tutorial" aria-label="Restart the tutorial" data-i18n-attr="title:try.reset,aria-label:try.reset">↺</button></div>
           <div class="studio-view" id="studio-view">
-            <iframe title="Veyra Studio: tour" data-k="example"></iframe>
-            <iframe title="Veyra Studio: guided tutorial" data-k="guided" hidden></iframe>
+            <iframe title="Veyra Studio: tour" data-k="example" data-i18n-attr="title:try.f1"></iframe>
+            <iframe title="Veyra Studio: guided tutorial" data-k="guided" data-i18n-attr="title:try.f2" hidden></iframe>
           </div>
         </div>
         </div>
         </div></div>
         <div class="studio-small">
-          <img src="media/studio-app.jpg" width="1440" height="810" alt="Veyra Studio with the pH-meter calibration procedure open: its steps in three phases and its acceptance limits" loading="lazy">
-          <p>Studio is a desktop app. Open this page on a computer to try it here.</p>
+          <img src="media/studio-app.jpg" width="1440" height="810" alt="Veyra Studio with the pH-meter calibration procedure open: its steps in three phases and its acceptance limits" data-i18n-attr="alt:try.imgAlt" loading="lazy">
+          <p data-i18n="try.small">Studio is a desktop app. Open this page on a computer to try it here.</p>
         </div>
       </div>
     </div>
@@ -679,10 +687,15 @@ footer .tag { margin-left: auto; font-weight: 600; color: var(--fg); }
 
   <section class="privacy" id="privacy">
     <div class="wrap">
+      <div class="top sec-head">
+        <p class="eyebrow" data-i18n="priv.eye">Privacy</p>
+        <h2 data-i18n="priv.h">Nothing leaves the lab.</h2>
+        <p data-i18n="priv.p">Procedures, readings and voice stay on one lab computer and your headsets.</p>
+      </div>
       <div class="lab">
         <div class="lab-frame">
-          <span class="lab-tag">Lab network &middot; Wi-Fi or USB</span>
-          <span class="lab-tag lab-tag-r">No internet connection</span>
+          <span class="lab-tag" data-i18n="lab.net">Lab network &middot; Wi-Fi or USB</span>
+          <span class="lab-tag lab-tag-r" data-i18n="lab.noNet">No internet connection</span>
         </div>
         <figure class="lab-node">
           <svg class="dev dev-pc" viewBox="0 0 160 130" aria-hidden="true">
@@ -694,11 +707,11 @@ footer .tag { margin-left: auto; font-weight: 600; color: var(--fg); }
             <line x1="56" y1="52" x2="132" y2="52"/><rect x="56" y="62" width="40" height="10" rx="2"/><rect x="104" y="74" width="34" height="9" rx="2" class="hi"/></g>
             <g class="stand"><path d="M68 98 L64 118 M92 98 L96 118"/><line x1="48" y1="120" x2="112" y2="120"/></g>
           </svg>
-          <figcaption><b>The lab PC</b>Studio, speech recognition and the assistant run here.</figcaption>
+          <figcaption data-i18n="lab.pc"><b>The lab PC</b>Studio, speech recognition and the assistant run here.</figcaption>
         </figure>
-        <div class="lanes" role="img" aria-label="The PC sends procedures, safety sheets, transcripts and answers to the headset; the headset sends readings, photos and voice notes back to the PC.">
-          <div class="lane to-hs"><span class="lane-lbl">To the headset &rarr;</span><div class="lane-track"><span style="--k: 0">Procedure v3</span><span style="--k: 1">SDS KH&#8322;PO&#8324;</span><span style="--k: 2">Transcript</span><span style="--k: 3">Answer</span></div></div>
-          <div class="lane to-pc"><span class="lane-lbl">&larr; To the PC</span><div class="lane-track"><span style="--k: 0">pH 7.02</span><span style="--k: 1">Slope 98.4&nbsp;%</span><span style="--k: 2">Photo</span><span style="--k: 3">Voice note</span></div></div>
+        <div class="lanes" role="img" aria-label="The PC sends procedures, safety sheets, transcripts and answers to the headset; the headset sends readings, photos and voice notes back to the PC." data-i18n-attr="aria-label:lab.lanes">
+          <div class="flow to-hs"><p data-i18n="lab.toHs">Procedures, safety sheets, answers</p><span class="wire" aria-hidden="true"></span></div>
+          <div class="flow to-pc"><span class="wire" aria-hidden="true"></span><p data-i18n="lab.toPc">Readings, photos, voice notes</p></div>
         </div>
         <figure class="lab-node">
           <svg class="dev" viewBox="0 0 160 130" aria-hidden="true">
@@ -707,18 +720,13 @@ footer .tag { margin-left: auto; font-weight: 600; color: var(--fg); }
             <rect x="36" y="50" width="16" height="30" rx="8" class="hi"/><rect x="108" y="50" width="16" height="30" rx="8" class="hi"/>
             <circle cx="80" cy="56" r="4"/><circle cx="66" cy="66" r="2.2"/><circle cx="94" cy="66" r="2.2"/>
           </svg>
-          <figcaption><b>The headsets</b>Meta Quest 3 and 3S, at the bench.</figcaption>
+          <figcaption data-i18n="lab.hs"><b>The headsets</b>Meta Quest 3 and 3S, at the bench.</figcaption>
         </figure>
       </div>
-      <div class="top sec-head">
-        <p class="eyebrow">Privacy</p>
-        <h2>Nothing leaves the lab.</h2>
-        <p>Procedures, readings and voice stay on one lab computer and your headsets.</p>
-      </div>
       <div class="cols">
-        <div><b>No accounts, no cloud</b><p>Lab Wi-Fi or a USB cable. Nothing to sign up for.</p></div>
-        <div><b>The models run on your PC</b><p>Speech, assistant and import all run locally.</p></div>
-        <div><b>The camera looks only when asked</b><p>Only when you ask what something is.</p></div>
+        <div><b data-i18n="priv.c1h">No accounts, no cloud</b><p data-i18n="priv.c1p">Lab Wi-Fi or a USB cable. Nothing to sign up for.</p></div>
+        <div><b data-i18n="priv.c2h">The models run on your PC</b><p data-i18n="priv.c2p">Speech, assistant and import all run locally.</p></div>
+        <div><b data-i18n="priv.c3h">The camera looks only when asked</b><p data-i18n="priv.c3p">Only when you ask what something is.</p></div>
       </div>
     </div>
   </section>
@@ -726,64 +734,89 @@ footer .tag { margin-left: auto; font-weight: 600; color: var(--fg); }
   <section class="team" id="team">
     <div class="wrap">
       <div class="team-head sec-head">
-        <p class="eyebrow">Team</p>
-        <h2>A developer and a chemist.</h2>
-        <p>Veyra is built by two people: one leads the technology, the other the science behind it.</p>
+        <p class="eyebrow" data-i18n="team.eye">Team</p>
+        <h2 data-i18n="team.h">A developer and a chemist.</h2>
+        <p data-i18n="team.p">Veyra is built by two people: one leads the technology, the other the science behind it.</p>
       </div>
       <div class="team-row">
-        <div class="stack" aria-label="Team members">
-          <a class="av is-front" href="team/martina.html" data-i="M" aria-label="Martina Cesarini, co-founder, technology"><img src="media/team/martina.jpg" alt="" width="280" height="280" loading="lazy" onerror="this.remove()"></a>
-          <a class="av is-back" href="team/filippo.html" data-i="F" aria-label="Filippo, co-founder, science"><img src="media/team/filippo.jpg" alt="" width="280" height="280" loading="lazy" onerror="this.remove()"></a>
-        </div>
-        <div class="team-who" aria-live="polite">
-          <article class="who-card is-on">
+        <article class="who-card">
+          <a class="av" href="team/martina.html" data-i="MC" tabindex="-1" aria-hidden="true"><img src="media/team/martina.jpg" alt="" width="280" height="280" loading="lazy" onerror="this.remove()"></a>
+          <div class="who-text">
             <h3>Martina Cesarini</h3>
-            <p class="who-role">Co-founder &middot; Technology</p>
-            <p>XR developer. Leads the technology behind Veyra, from the Meta&nbsp;Quest app at the bench to Studio at the desk.</p>
-            <a class="text-link" href="team/martina.html">About Martina <span aria-hidden="true">&rarr;</span></a>
-          </article>
-          <article class="who-card">
-            <h3>Filippo</h3>
-            <p class="who-role">Co-founder &middot; Science</p>
-            <p>Chemist. Leads the science behind Veyra: procedures, safety data, calculations and analysis, all held to real lab practice.</p>
-            <a class="text-link" href="team/filippo.html">About Filippo <span aria-hidden="true">&rarr;</span></a>
-          </article>
-        </div>
+            <p class="who-role" data-i18n="team.r1">Co-founder &middot; Technology</p>
+            <p data-i18n="team.b1">XR developer. Leads the technology behind Veyra, from the Meta&nbsp;Quest app at the bench to Studio at the desk.</p>
+            <a class="btn btn-line" data-go="next" href="team/martina.html"><span class="btn-goo" aria-hidden="true"><i class="goo-pill"></i><i class="goo-dot"></i></span><span class="btn-label" data-i18n="team.l1">About Martina</span><span class="btn-port" aria-hidden="true"><svg viewBox="0 0 16 16"><path d="M2.5 8h11M9 3.5 13.5 8 9 12.5"/></svg></span></a>
+          </div>
+        </article>
+        <article class="who-card">
+          <a class="av" href="team/filippo.html" data-i="FR" tabindex="-1" aria-hidden="true"><img src="media/team/filippo.jpg" alt="" width="280" height="280" loading="lazy" onerror="this.remove()"></a>
+          <div class="who-text">
+            <h3>Filippo Rosati</h3>
+            <p class="who-role" data-i18n="team.r2">Co-founder &middot; Science</p>
+            <p data-i18n="team.b2">Chemist. Leads the science behind Veyra: procedures, safety data, calculations and analysis, all held to real lab practice.</p>
+            <a class="btn btn-line" data-go="next" href="team/filippo.html"><span class="btn-goo" aria-hidden="true"><i class="goo-pill"></i><i class="goo-dot"></i></span><span class="btn-label" data-i18n="team.l2">About Filippo</span><span class="btn-port" aria-hidden="true"><svg viewBox="0 0 16 16"><path d="M2.5 8h11M9 3.5 13.5 8 9 12.5"/></svg></span></a>
+          </div>
+        </article>
       </div>
     </div>
   </section>
 
-  <section class="contact" id="contact">
+  <section class="contact" id="feedback">
     <div class="wrap">
       <div class="grid">
         <div>
-          <h2>Bring Veyra to your lab.</h2>
-          <p>Tell us the first procedure you'd run. We'll set it up with you.</p>
-          <div class="ctas"><a class="btn" href="#try">Try Studio in your browser</a></div>
-        </div>
-        <form id="contact-form" novalidate>
-          <div class="row2">
-            <div class="field"><label for="c-name">Name</label><input id="c-name" name="name" autocomplete="name" required></div>
-            <div class="field"><label for="c-lab">Lab or institution</label><input id="c-lab" name="lab" autocomplete="organization"></div>
+          <h2 data-i18n="fb.h">Work in a lab? Tell us where it slows you down.</h2>
+          <p data-i18n="fb.p">Ten questions, about three minutes. Your answers decide what we build next.</p>
+          <div class="ctas">
+            <a class="btn btn-solid" data-go="out" href="https://docs.google.com/forms/d/e/1FAIpQLSc6N8agMAL9RpPuLv27otCeABp_qlUZtyQyEs7LluPBhQivSw/viewform" target="_blank" rel="noopener"><span class="btn-goo" aria-hidden="true"><i class="goo-pill"></i><i class="goo-dot"></i></span><span class="btn-label" data-i18n="cta.feedback">Give us feedback</span><span class="btn-port" aria-hidden="true"><svg viewBox="0 0 16 16"><path d="M2.5 8h11M9 3.5 13.5 8 9 12.5"/></svg></span><span class="sr-only" data-i18n="fb.newTab">(opens Google Forms in a new tab)</span></a>
           </div>
-          <div class="field"><label for="c-email">Email</label><input id="c-email" name="email" type="email" autocomplete="email" required></div>
-          <div class="field"><label for="c-msg">The procedure you would start with</label><textarea id="c-msg" name="message" placeholder="pH-meter calibration for second-year students, 12 benches"></textarea></div>
-          <div><button class="btn btn-solid" type="submit">Request a pilot</button></div>
-          <p class="note" id="c-note" role="status"></p>
-        </form>
+          <p class="fb-note" data-i18n="fb.note">The survey is in Italian.</p>
+        </div>
+        <div class="asks">
+          <h3 data-i18n="fb.asksH">What we ask</h3>
+          <ol>
+            <li data-i18n="fb.a1"><b>Your work</b>Your role and the field you work in.</li>
+            <li data-i18n="fb.a2"><b>At the bench</b>What makes you look away from the experiment, and how often.</li>
+            <li data-i18n="fb.a3"><b>The idea</b>Which features would matter, and what worries you about a headset in the lab.</li>
+            <li data-i18n="fb.a4"><b>Your lab</b>Whether it already has headsets, and who decides on new tools.</li>
+          </ol>
+          <p data-i18n="fb.opt">At the end you can leave your email for a 10-minute call or to try an early version. It is optional.</p>
+        </div>
       </div>
     </div>
   </section>
 </main>
 
 <footer>
-  <div class="wrap">
-    <a class="brand" href="#top"><img src="media/veyra.svg" alt="" width="44" height="27">Veyra</a>
-    <span>Veyra and Veyra Studio</span>
-    <span class="tag">Write it at the desk. Follow it at the bench.</span>
+  <div class="wrap foot">
+    <div class="foot-brand">
+      <a class="brand" href="#top"><img src="media/veyra-light.svg" alt="" width="44" height="27">Veyra</a>
+      <p data-i18n="foot.desc">A hands-free lab assistant for Meta Quest 3 and 3S, with Studio for writing procedures at the desk.</p>
+    </div>
+    <nav class="foot-col" aria-label="Product" data-i18n-attr="aria-label:foot.product">
+      <h3 data-i18n="foot.product">Product</h3>
+      <a href="#fig1" data-i18n="nav.bench">At the bench</a>
+      <a href="#desk" data-i18n="nav.desk">At the desk</a>
+      <a href="#try" data-i18n="nav.try">Try Studio</a>
+    </nav>
+    <div class="foot-col">
+      <h3 data-i18n="foot.us">Us</h3>
+      <a href="#team" data-i18n="nav.team">Team</a>
+      <a href="#feedback" data-i18n="cta.feedback">Give us feedback</a>
+      <a href="privacy.html" data-i18n="foot.privacy">Privacy</a>
+    </div>
+    <div class="foot-col">
+      <h3 data-i18n="foot.aboutH">About this page</h3>
+      <p class="foot-demo" data-i18n="foot.about">A concept demo of a product in development. Veyra is not on sale yet.</p>
+    </div>
+    <div class="foot-base">
+      <span>&copy; 2026 Martina Cesarini, Filippo Rosati</span>
+      <span data-i18n="foot.motto">Write it at the desk. Follow it at the bench.</span>
+    </div>
   </div>
 </footer>
 
+<script src="i18n.js"></script>
 <script>
 (() => {
   // Nav: folded into the logo once the page has moved 100px, unfolded by a click on it; the highlight follows the
@@ -822,7 +855,7 @@ footer .tag { margin-left: auto; font-weight: 600; color: var(--fg); }
       ticking = false;
       let here = null;
       for (const [a, t] of marks) if (t.getBoundingClientRect().top <= innerHeight * 0.4) here = a;
-      const last = document.getElementById('contact');
+      const last = document.getElementById('feedback');
       if (last && last.getBoundingClientRect().top <= innerHeight * 0.4) here = null;
       marks.forEach(([a]) => a.classList.toggle('is-here', a === here));
     };
@@ -838,7 +871,11 @@ footer .tag { margin-left: auto; font-weight: 600; color: var(--fg); }
   const toggle = navEl.querySelector('.nav-toggle');
   const menu = document.getElementById('nav-menu');
   const setMenu = (on) => { menu.classList.toggle('open', on); toggle.setAttribute('aria-expanded', String(on)); toggle.setAttribute('aria-label', on ? 'Close menu' : 'Menu'); };
-  toggle.addEventListener('click', () => setMenu(!menu.classList.contains('open')));
+  let menuAt = 0;
+  toggle.addEventListener('click', () => { menuAt = scrollY; setMenu(!menu.classList.contains('open')); });
+  // the open phone menu covers the page: scrolling on, or tapping outside it, closes it
+  addEventListener('scroll', () => { if (menu.classList.contains('open') && Math.abs(scrollY - menuAt) > 80) setMenu(false); }, { passive: true });
+  document.addEventListener('click', (e) => { if (menu.classList.contains('open') && !navEl.contains(e.target)) setMenu(false); });
   menu.querySelectorAll('a').forEach((a) => a.addEventListener('click', () => { setMenu(false); setOpen(false); }));
   addEventListener('keydown', (e) => {
     if (e.key !== 'Escape') return;
@@ -901,17 +938,20 @@ footer .tag { margin-left: auto; font-weight: 600; color: var(--fg); }
   {
     const lens = document.getElementById('lens'), fol = lens.querySelector('.follow'), fine = matchMedia('(hover: hover) and (pointer: fine)');
     // the panels in the "with" capture, as % of the plate (x0, y0, x1, y1); the first match wins, front panels first
+    // labels are translation keys (i18n.js); English is the fallback
     const spots = [
-      ['Calculator', 0, 12, 17.5, 71],
-      ['Safety data sheet', 15, 0, 40, 56],
-      ['Procedure step', 42.5, 0, 65.5, 27],
-      ['PPE checklist', 64.7, 0, 80.5, 28.5],
-      ['3D structure from RCSB', 41.5, 29, 55.5, 52],
-      ['Timer', 60.5, 38, 76, 56],
-      ['Structure drawing', 77, 20, 99.5, 61.5],
+      ['spot.calc', 'Calculator', 0, 12, 17.5, 71],
+      ['spot.sds', 'Safety data sheet', 15, 0, 40, 56],
+      ['spot.step', 'Procedure step', 42.5, 0, 65.5, 27],
+      ['spot.ppe', 'PPE checklist', 64.7, 0, 80.5, 28.5],
+      ['spot.pdb', '3D structure from RCSB', 41.5, 29, 55.5, 52],
+      ['spot.timer', 'Timer', 60.5, 38, 76, 56],
+      ['spot.draw', 'Structure drawing', 77, 20, 99.5, 61.5],
     ];
+    const t = (k, en) => (window.I18N ? I18N.t(k, en) : en);
     const tag = fol.querySelector('span');
     let px = -1, py = -1, said = '';
+    addEventListener('langchange', () => { said = ''; });
     const upd = () => {
       if (px < 0 || !fine.matches || !lens.classList.contains('open')) { lens.classList.remove('on-with'); return; }
       const lr = lens.getBoundingClientRect(), r = plate.getBoundingClientRect();
@@ -919,8 +959,8 @@ footer .tag { margin-left: auto; font-weight: 600; color: var(--fg); }
       lens.classList.toggle('on-with', onWith);
       fol.style.transform = `translate3d(${px - lr.left}px, ${py - lr.top}px, 0)`;
       const u = (px - r.left) / r.width * 100, v = (py - r.top) / r.height * 100;
-      const hit = spots.find(([, a, b, c, d]) => u >= a && u <= c && v >= b && v <= d);
-      const say = hit ? hit[0] : 'With Veyra';
+      const hit = spots.find(([, , a, b, c, d]) => u >= a && u <= c && v >= b && v <= d);
+      const say = hit ? t(hit[0], hit[1]) : t('cmp.with', 'With Veyra');
       if (say !== said) { said = say; tag.textContent = say; tag.classList.toggle('is-spot', !!hit); }
     };
     lens.addEventListener('pointermove', (e) => { if (e.pointerType !== 'mouse') return; px = e.clientX; py = e.clientY; upd(); });
@@ -1132,31 +1172,6 @@ footer .tag { margin-left: auto; font-weight: 600; color: var(--fg); }
     });
   }
 
-  // Team: the two circles take turns in front every few seconds while the section is on screen; the words on the
-  // right follow the one in front. Hover or focus holds the turn; clicking the one behind brings it forward.
-  {
-    const avs = [...document.querySelectorAll('.stack .av')], cards = [...document.querySelectorAll('.who-card')];
-    const stage = document.querySelector('.team-row');
-    if (avs.length === 2 && stage) {
-      let front = 0, timer = 0, seenT = false, holdT = false;
-      const show = (k) => {
-        front = k;
-        avs.forEach((a, i) => { a.classList.toggle('is-front', i === k); a.classList.toggle('is-back', i !== k); a.tabIndex = 0; });
-        cards.forEach((c, i) => c.classList.toggle('is-on', i === k));
-      };
-      const loop = () => {
-        clearInterval(timer);
-        if (seenT && !holdT && !calm) timer = setInterval(() => show(1 - front), 5000);
-      };
-      avs.forEach((a, i) => a.addEventListener('click', (e) => { if (i !== front) { e.preventDefault(); show(i); loop(); } }));
-      stage.addEventListener('mouseenter', () => { holdT = true; loop(); });
-      stage.addEventListener('mouseleave', () => { holdT = false; loop(); });
-      stage.addEventListener('focusin', () => { holdT = true; loop(); });
-      stage.addEventListener('focusout', () => { holdT = false; loop(); });
-      if ('IntersectionObserver' in window) new IntersectionObserver(([e]) => { seenT = e.isIntersecting; loop(); }, { threshold: 0.4 }).observe(stage);
-    }
-  }
-
   const feats = [...document.querySelectorAll('video[data-feat]')];
   if (!calm && 'IntersectionObserver' in window) {
     const io = new IntersectionObserver((es) => es.forEach((e) => {
@@ -1171,7 +1186,10 @@ footer .tag { margin-left: auto; font-weight: 600; color: var(--fg); }
   const view = document.getElementById('studio-view');
   const frames = {};
   view.querySelectorAll('iframe').forEach((f) => (frames[f.dataset.k] = f));
-  const url = (k) => 'studio/index.html?open=' + k;
+  // one Studio build per language (studio/en, studio/it), so the app, its sample procedure and its tutorials all
+  // speak the page's language
+  const lang = () => (window.I18N && I18N.lang === 'it' ? 'it' : 'en');
+  const url = (k) => 'studio/' + lang() + '/index.html?open=' + k;
   // in full screen Studio gets the whole screen at 1:1, as the desktop app would
   const fit = () => {
     const full = win.classList.contains('is-full');
@@ -1199,6 +1217,13 @@ footer .tag { margin-left: auto; font-weight: 600; color: var(--fg); }
     tabs.forEach((o) => o.setAttribute('aria-selected', String(o === t)));
   }));
   document.querySelector('.studio-reset').addEventListener('click', () => { frames[current].src = url(current); });
+  // switching language reloads the tutorial that is open in the new language; the other one follows when opened
+  addEventListener('langchange', () => {
+    for (const k in frames) {
+      if (!frames[k].getAttribute('src')) continue;
+      if (k === current) frames[k].src = url(k); else frames[k].removeAttribute('src');
+    }
+  });
   // Full screen: the Fullscreen API when the page may use it; inside a frame that may not, the window fills the viewport instead
   const fsBtn = document.querySelector('.studio-full');
   const setFull = (on) => {
@@ -1206,7 +1231,7 @@ footer .tag { margin-left: auto; font-weight: 600; color: var(--fg); }
     document.documentElement.style.overflow = on ? 'hidden' : '';
     document.documentElement.classList.toggle('studio-full-on', on);
     fsBtn.setAttribute('aria-pressed', String(on));
-    fsBtn.title = on ? 'Exit full screen' : 'Full screen';
+    fsBtn.title = window.I18N ? I18N.t(on ? 'try.fsOff' : 'try.fsOn', on ? 'Exit full screen' : 'Full screen') : (on ? 'Exit full screen' : 'Full screen');
     fsBtn.setAttribute('aria-label', fsBtn.title);
     fit();
   };
@@ -1222,21 +1247,6 @@ footer .tag { margin-left: auto; font-weight: 600; color: var(--fg); }
   document.addEventListener('fullscreenchange', onFs);
   document.addEventListener('webkitfullscreenchange', onFs);
   addEventListener('keydown', (e) => { if (e.key === 'Escape' && win.classList.contains('is-full') && !fsEl()) setFull(false); });
-
-  // the pilot form has no inbox behind it yet
-  const form = document.getElementById('contact-form');
-  const note = document.getElementById('c-note');
-  form.addEventListener('submit', (e) => {
-    e.preventDefault();
-    const name = form.elements.name.value.trim();
-    const email = form.elements.email.value.trim();
-    if (!name || !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) {
-      note.textContent = 'Add your name and a valid email address so we can reply.';
-      (name ? form.elements.email : form.elements.name).focus();
-      return;
-    }
-    note.textContent = 'Thanks, ' + name + '. This preview form is not connected to an inbox yet, so nothing was sent.';
-  });
 })();
 </script>
 </body>

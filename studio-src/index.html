@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="it">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Veyra Studio</title>
+    <script>
+      // Embedded in the landing page: the tour's scrollIntoView and focus() would also scroll the page around this
+      // frame, so the page jumped on every "Next". Here both only ever scroll Studio's own panes, never the host.
+      if (window.top !== window) {
+        Element.prototype.scrollIntoView = function (opt) {
+          var o = opt && typeof opt === 'object' ? opt : { block: opt === false ? 'end' : 'start' };
+          var block = o.block || 'start', behavior = o.behavior || 'auto', el = this;
+          var shift = function (r, pr) {
+            if (block === 'center') return (r.top + r.height / 2) - (pr.top + pr.height / 2);
+            if (block === 'end') return r.bottom - pr.bottom;
+            if (block === 'nearest') return r.top < pr.top ? r.top - pr.top : r.bottom > pr.bottom ? r.bottom - pr.bottom : 0;
+            return r.top - pr.top;
+          };
+          for (var p = el.parentElement; p && p !== document.documentElement; p = p.parentElement) {
+            if (/(auto|scroll|overlay)/.test(getComputedStyle(p).overflowY) && p.scrollHeight > p.clientHeight) {
+              var dy = shift(el.getBoundingClientRect(), p.getBoundingClientRect());
+              if (dy) p.scrollBy({ top: dy, behavior: behavior });
+            }
+          }
+        };
+        var focus = HTMLElement.prototype.focus;
+        HTMLElement.prototype.focus = function (o) { return focus.call(this, Object.assign({}, o, { preventScroll: true })); };
+      }
+    </script>
+  </head>
+  <body>
+    <div id="root"></div>
+    <!-- hides the dashboard while web-main.tsx clicks its way into the requested tutorial -->
+    <div id="boot" style="position:fixed;inset:0;z-index:2147483647;background:#15181d;display:none;place-items:center;color:#6b7380;font:12px/1 ui-monospace,Consolas,monospace;letter-spacing:.08em;text-transform:uppercase;transition:opacity .25s">Opening the tutorial…</div>
+    <script>if (/[?&]open=/.test(location.search)) document.getElementById('boot').style.display = 'grid'</script>
+    <script type="module" src="./web-main.tsx"></script>
+  </body>
+</html>

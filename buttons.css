@@ -1,0 +1,106 @@
+/* Links that take you somewhere. At rest: a plain pill with the label, nothing else.
+   On hover a bubble buds out of the pill's end, a liquid neck stretches and snaps, and the bubble floats
+   off on a diagonal, turning green, with the arrow appearing inside it. Leaving, it sinks back in.
+   The bubble hides inside the pill's rounded end at rest (same colour, concentric), so it can't be seen.
+   The merge and the neck come from the "goo" filter (#goo, an inline SVG on each page) applied to a
+   background layer; the label and the arrow sit on top of it, unfiltered.
+   Markup:
+     <a class="btn btn-solid" data-go="next" href="…">
+       <span class="btn-goo" aria-hidden="true"><i class="goo-pill"></i><i class="goo-dot"></i></span>
+       <span class="btn-label">Label</span><span class="btn-port" aria-hidden="true"><svg>…</svg></span></a>
+   The arrow says where the link goes:
+     data-go="down"  further down this page      data-go="next"  another page of the site
+     data-go="out"   another site, new tab       data-go="back"  back where you came from (the bubble leaves to the left)
+   .btn-solid is the one main action of a section, .btn-line everything secondary.
+   Uses the page tokens --fg --ink --fg-dim --teal --display. */
+
+.btn { --h: 48px; --d: 34px; --pad: 24px; --dx: 46px; --dy: -20px; --side: 1;
+  --in: calc((var(--h) - var(--d)) / 2); /* the bubble's inset at rest: concentric with the pill's rounded end */
+  --r: 0deg; --nx: 2px; --ny: 0px; --fill: var(--fg); --text: var(--ink);
+  --away: cubic-bezier(0.3, 1.4, 0.5, 1); /* a little overshoot: the bubble pops free, then settles */
+  position: relative; isolation: isolate; display: inline-flex; align-items: center; height: var(--h);
+  vertical-align: middle; font: 600 15px/1 var(--display); color: var(--text); text-decoration: none; cursor: pointer; -webkit-tap-highlight-color: transparent; }
+.btn[data-go="down"] { --r: 90deg;  --nx: 0px;  --ny: 2px; }
+.btn[data-go="out"]  { --r: -45deg; --nx: 2px;  --ny: -2px; }
+.btn[data-go="back"] { --r: 180deg; --nx: -2px; --ny: 0px; --side: -1; }
+
+.btn-solid { --fill: var(--fg); --text: var(--ink); }
+.btn-line  { --fill: #23282e; --text: var(--fg); }
+
+/* the bubble's layer reaches past a button at the page edge; the page never scrolls sideways because of it */
+html, body { overflow-x: clip; } /* on html alone it passes to the window as "hidden", which still scrolls by touch; body then clips for real */
+
+/* the filtered layer. It reaches past the button so the bubble and the neck are never cut off */
+.btn-goo { position: absolute; z-index: -1; inset: -48px; filter: url(#goo); pointer-events: none; }
+.goo-pill, .goo-dot { position: absolute; background: var(--fill); }
+.goo-pill { inset: 48px; border-radius: 999px; transition: background-color 0.2s; }
+.goo-dot, .btn-port { width: var(--d); height: var(--d); border-radius: 50%; }
+.goo-dot { top: calc(48px + var(--in)); right: calc(48px + var(--in)); }
+.btn-port { position: absolute; top: var(--in); right: var(--in); display: grid; place-items: center; color: var(--ink); opacity: 0; }
+.btn[data-go="back"] .goo-dot { right: auto; left: calc(48px + var(--in)); }
+.btn[data-go="back"] .btn-port { right: auto; left: var(--in); }
+.btn-label { padding: 0 var(--pad); white-space: nowrap; }
+.btn-port svg { width: 14px; height: 14px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;
+  transform: rotate(var(--r)); transition: translate 0.3s ease 0.2s; }
+
+/* leaving the pill: bubble and arrow travel together. The green and the arrow arrive once it is out,
+   so nothing shows over the label while the bubble is still inside */
+.goo-dot, .btn-port { transition: transform 0.6s var(--away), background-color 0.25s, opacity 0.15s; }
+.btn:hover .goo-dot, .btn:hover .btn-port { transform: translate(calc(var(--side) * var(--dx)), var(--dy)); }
+.btn:hover .goo-dot { background: var(--teal); transition: transform 0.6s var(--away), background-color 0.3s 0.12s; }
+.btn:hover .btn-port { opacity: 1; transition: transform 0.6s var(--away), opacity 0.25s 0.15s; }
+.btn:hover .btn-port svg { translate: var(--nx) var(--ny); }
+.btn-solid:hover .goo-pill { background: #fff; }
+.btn-line:hover .goo-pill { background: #2c323a; }
+
+.btn:focus-visible { outline: 2px solid var(--teal); outline-offset: 4px; border-radius: 999px; }
+/* keyboard: the bubble comes out on focus too */
+.btn:focus-visible .goo-dot, .btn:focus-visible .btn-port { transform: translate(calc(var(--side) * var(--dx)), var(--dy)); }
+.btn:focus-visible .goo-dot { background: var(--teal); }
+.btn:focus-visible .btn-port { opacity: 1; }
+
+/* a smaller size for bars and headers: a flatter path, so the bubble stays inside the bar.
+   The ::before keeps a 44px hit area */
+.btn-sm { --h: 40px; --d: 24px; --pad: 16px; --dx: 36px; --dy: -12px; font-size: 14px; }
+.btn-sm::before { content: ""; position: absolute; inset: -2px 0; }
+.btn-sm .btn-port svg { width: 12px; height: 12px; }
+/* room on the side a back link's bubble leaves from */
+.btn-sm[data-go="back"] { margin-left: var(--s-5, 24px); }
+
+/* a label that steps aside on a phone: what is left is the bubble alone, shown, as a round button
+   (screen readers keep the label) */
+@media (max-width: 560px) {
+  .btn-label-wide { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; padding: 0; }
+  .btn:has(.btn-label-wide) { --h: 44px; --d: 44px; --in: 0px; width: 44px; margin-left: 0; }
+  .btn:has(.btn-label-wide) .goo-pill { display: none; }
+  .btn:has(.btn-label-wide) .goo-dot { left: 48px; }
+  .btn:has(.btn-label-wide) .btn-port { opacity: 1; color: var(--text); }
+  .btn:has(.btn-label-wide) .btn-port svg { width: 16px; height: 16px; }
+  .btn:has(.btn-label-wide):hover .goo-dot, .btn:has(.btn-label-wide):hover .btn-port { transform: none; }
+}
+
+/* Language: one outlined tube holding both codes, and a solid drop behind the current one.
+   Switching, the drop moves like liquid in a capillary: the leading edge goes first, the trailing edge
+   follows a beat later, so it stretches across and pulls back round.
+   Markup: .lang > button[data-lang][aria-pressed] x2 */
+.lang { --k: 34px; --flow: cubic-bezier(0.55, 0, 0.25, 1); position: relative; display: inline-flex; padding: 2px; gap: 0;
+  border: 1px solid rgba(238, 241, 239, 0.13); border-radius: 999px; background: rgba(11, 13, 16, 0.35); transition: border-color 0.2s; }
+.lang::before { content: ""; position: absolute; top: 2px; bottom: 2px; left: 2px; right: calc(2px + var(--k)); border-radius: 999px; background: var(--fg);
+  transition: left 0.26s var(--flow), right 0.26s var(--flow) 0.1s; }
+.lang:has([data-lang="it"][aria-pressed="true"])::before { left: calc(2px + var(--k)); right: 2px;
+  transition: right 0.26s var(--flow), left 0.26s var(--flow) 0.1s; }
+.lang button { position: relative; width: var(--k); height: var(--k); min-width: 0; min-height: 0; padding: 0; border: 0; border-radius: 50%; background: none; cursor: pointer;
+  font: 600 12px/1 var(--display); letter-spacing: 0.04em; color: var(--fg-dim); text-decoration: none; transition: color 0.2s 0.1s; }
+.lang button:hover { color: var(--fg); }
+.lang button[aria-pressed="true"] { color: var(--ink); cursor: default; }
+.lang:hover { border-color: rgba(238, 241, 239, 0.26); }
+.lang button:focus-visible { outline: 2px solid var(--teal); outline-offset: 2px; }
+/* touch: full 44px codes */
+@media (pointer: coarse), (max-width: 760px) { .lang { --k: 44px; } }
+
+@media (prefers-reduced-motion: reduce) {
+  .lang::before, .lang:has([data-lang="it"][aria-pressed="true"])::before { transition: none; }
+  /* no bubble: the pill only brightens (the arrow-only back button on a phone keeps its arrow) */
+  .btn:not(:has(.btn-label-wide)) .goo-dot, .btn:not(:has(.btn-label-wide)) .btn-port { display: none; }
+  .btn-port svg { transition: none; }
+}

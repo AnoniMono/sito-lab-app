@@ -1,0 +1,9 @@
+{
+  "compilerOptions": {
+    "target": "ES2022", "module": "ESNext", "moduleResolution": "Bundler", "strict": true, "noEmit": true,
+    "jsx": "react-jsx", "skipLibCheck": true, "lib": ["ES2023", "DOM", "DOM.Iterable"],
+    "baseUrl": ".", "typeRoots": ["C:/Users/MartinaCesarini/Documents/GitHub/Lab-Companion/Veyra/node_modules/@types"],
+    "paths": { "@shared/*": ["C:/Users/MartinaCesarini/Documents/GitHub/Lab-Companion/Veyra/src/shared/*"], "@renderer/*": ["C:/Users/MartinaCesarini/Documents/GitHub/Lab-Companion/Veyra/src/renderer/*"], "react": ["C:/Users/MartinaCesarini/Documents/GitHub/Lab-Companion/Veyra/node_modules/@types/react"], "react-dom/*": ["C:/Users/MartinaCesarini/Documents/GitHub/Lab-Companion/Veyra/node_modules/@types/react-dom/*"] }
+  },
+  "files": ["mock-studio.ts"]
+}

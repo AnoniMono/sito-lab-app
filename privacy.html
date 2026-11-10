@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title data-i18n="pp.title">Privacy · Veyra</title>
+<meta name="description" content="How the Veyra website handles your data.">
+<link rel="icon" href="media/veyra.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<link rel="stylesheet" href="buttons.css">
+<style>
+:root {
+  --ink: #0b0d10; --ink-raised: #13161b; --fg: #eef1ef; --fg-dim: #a2aba7; --line: rgba(238, 241, 239, 0.13); --teal: #2fbfa0;
+  --display: "IBM Plex Sans", "Segoe UI", system-ui, sans-serif; --mono: "IBM Plex Mono", ui-monospace, "Cascadia Mono", monospace;
+  --s-2: 8px; --s-3: 12px; --s-4: 16px; --s-5: 24px; --s-6: 32px; --s-7: 48px; --s-8: 64px; --s-9: 96px;
+  --gutter: 16px; --wrap: 1240px; --r-l: 22px;
+}
+@media (min-width: 900px) { :root { --gutter: 24px; } }
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--ink); color: var(--fg); font: 400 17px/1.6 var(--display); -webkit-font-smoothing: antialiased; }
+a { color: inherit; }
+:focus-visible { outline: 2px solid var(--teal); outline-offset: 3px; border-radius: 4px; }
+.wrap { max-width: calc(var(--wrap) + 2 * var(--gutter)); margin: 0 auto; padding: 0 var(--gutter); }
+.bar { }
+.bar .wrap { display: flex; align-items: center; justify-content: space-between; min-height: 64px; gap: var(--s-4); }
+.brand { display: inline-flex; align-items: center; gap: var(--s-3); text-decoration: none; font-weight: 600; font-size: 20px; letter-spacing: -0.01em; min-height: 44px; }
+.brand img { width: 40px; height: 28px; }
+.lang { margin-left: auto; }
+main { padding: var(--s-9) 0 var(--s-8); }
+.who { display: grid; grid-template-columns: minmax(0, 4fr) minmax(0, 7fr); gap: var(--s-7) var(--gutter); align-items: start; }
+.portrait { position: relative; aspect-ratio: 1; border-radius: 50%; overflow: hidden; background: var(--ink-raised); border: 1px solid var(--line); display: grid; place-items: center; max-width: 380px; }
+.portrait::before { content: attr(data-i); font: 500 clamp(48px, 7vw, 96px)/1 var(--display); color: var(--fg-dim); }
+.portrait img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.label { font: 500 14px/1.4 var(--display); color: var(--teal); margin: 0 0 var(--s-4); }
+h1 { font-size: clamp(40px, 5.4vw, 76px); font-weight: 600; letter-spacing: -0.03em; line-height: 1.02; margin: 0; }
+.role { font-size: clamp(18px, 1.5vw, 22px); color: var(--fg-dim); margin: var(--s-4) 0 0; }
+.bio { margin-top: var(--s-7); display: grid; gap: var(--s-4); max-width: 36em; }
+.bio p { margin: 0; }
+.facts { margin: var(--s-7) 0 0; display: grid; max-width: 36em; }
+.facts div { display: grid; grid-template-columns: minmax(0, 2fr) minmax(0, 5fr); gap: var(--s-4); padding: var(--s-3) 0; }
+.facts dt { font: 500 14px/1.6 var(--display); color: var(--fg-dim); }
+.facts dd { margin: 0; font-size: 15px; }
+.next { margin-top: var(--s-9); }
+.next a { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: var(--s-2) var(--s-4); padding: var(--s-5) 0; text-decoration: none; min-height: 44px; }
+.next i { grid-column: 2; grid-row: 1 / 3; font-size: 22px; }
+.next span { font: 500 14px/1.4 var(--display); color: var(--fg-dim); }
+.next b { font-size: clamp(22px, 2.4vw, 32px); font-weight: 600; letter-spacing: -0.02em; }
+.next i { font-style: normal; color: var(--fg-dim); transition: transform 0.3s, color 0.3s; }
+.next a:hover i { transform: translateX(4px); color: var(--teal); }
+@media (max-width: 760px) {
+  main { padding-top: var(--s-7); }
+  .who { grid-template-columns: 1fr; gap: var(--s-6); }
+  .portrait { max-width: 180px; }
+}
+@media (prefers-reduced-motion: reduce) { .next i { transition: none; } }
+
+.doc { max-width: 42rem; }
+.doc h1 { font-size: clamp(36px, 4.6vw, 60px); }
+.doc .upd { color: var(--fg-dim); margin: var(--s-4) 0 0; font-size: 15px; }
+.doc h2 { font-size: 22px; font-weight: 600; letter-spacing: -0.01em; margin: var(--s-8) 0 var(--s-3); }
+.doc p, .doc li { color: var(--fg-dim); line-height: 1.65; }
+.doc p { margin: 0 0 var(--s-3); }
+.doc ul { margin: 0 0 var(--s-3); padding-left: 1.2em; }
+.doc strong { color: var(--fg); font-weight: 600; }
+.todo { color: var(--teal); }
+</style>
+</head>
+<body>
+<svg class="goo-defs" width="0" height="0" aria-hidden="true" focusable="false" style="position:absolute"><filter id="goo" x="-20%" y="-50%" width="140%" height="200%"><feGaussianBlur in="SourceGraphic" stdDeviation="5" result="b"/><feColorMatrix in="b" mode="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 22 -10"/></filter></svg>
+<header class="bar"><div class="wrap">
+  <a class="brand" href="index.html"><img src="media/veyra-light.svg" alt="" width="40" height="28">Veyra</a>
+  <div class="lang" role="group" aria-label="Language" data-i18n-attr="aria-label:lang.label"><button type="button" data-lang="en" lang="en" aria-label="English">EN</button><button type="button" data-lang="it" lang="it" aria-label="Italiano">IT</button></div>
+  <a class="btn btn-line btn-sm" data-go="back" href="index.html"><span class="btn-goo" aria-hidden="true"><i class="goo-pill"></i><i class="goo-dot"></i></span><span class="btn-port" aria-hidden="true"><svg viewBox="0 0 16 16"><path d="M2.5 8h11M9 3.5 13.5 8 9 12.5"/></svg></span><span class="btn-label btn-label-wide" data-i18n="pp.back">Back to the site</span></a>
+</div></header>
+<main><div class="wrap">
+  <article class="doc">
+    <p class="label" data-i18n="pp.label">Legal</p>
+    <h1 data-i18n="pp.h">Privacy</h1>
+    <p class="upd" data-i18n="pp.upd">Last updated: 10 November 2026</p>
+
+    <h2 data-i18n="pp.h1">What this page is</h2>
+    <p data-i18n="pp.p1">This is a demo of a product in development, run by Martina Cesarini and Filippo Rosati. It is not a commercial service and sells nothing.</p>
+
+    <h2 data-i18n="pp.h2">What this page collects</h2>
+    <p data-i18n="pp.p2">Nothing. No forms, no visitor analytics, no advertising or tracking cookies.</p>
+    <ul>
+      <li data-i18n="pp.l1">The Studio demo runs entirely in your browser and keeps what you type in memory only: closing or reloading the page clears it.</li>
+      <li data-i18n="pp.l2">The language you pick is remembered in your browser's local storage, and nowhere else.</li>
+    </ul>
+
+    <h2 data-i18n="pp.h3">The survey</h2>
+    <p data-i18n="pp.p3">The feedback survey is a Google Form, opened in a new tab. Google processes your answers under its own privacy policy. We read the answers to decide what to build.</p>
+    <p data-i18n="pp.p4">The email field is optional. If you fill it in, we use it only to arrange the call or the trial you asked for, and delete it once it is no longer needed. To have it deleted sooner, reply to any message we send you.</p>
+
+    <h2 data-i18n="pp.h4">Fonts</h2>
+    <p data-i18n="pp.p5">The text on this site uses IBM Plex, loaded from Google Fonts. When the page loads, your browser contacts Google's servers, which see your IP address.</p>
+
+    <h2 data-i18n="pp.h5">Your rights</h2>
+    <p data-i18n="pp.p6">Under the GDPR you can ask to see, correct or delete the data we hold about you, or object to its use. You can also complain to the Italian data protection authority, the Garante per la protezione dei dati personali (garanteprivacy.it).</p>
+  </article>
+</div></main>
+<script src="i18n.js"></script>
+</body>
+</html>
