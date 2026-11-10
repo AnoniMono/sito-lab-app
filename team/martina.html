@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Martina Cesarini · Veyra</title>
+<meta name="description" content="Martina Cesarini, co-founder and technology lead, Veyra.">
+<link rel="icon" href="../media/veyra.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+:root {
+  --ink: #0b0d10; --ink-raised: #13161b; --fg: #eef1ef; --fg-dim: #a2aba7; --line: rgba(238, 241, 239, 0.13); --teal: #2fbfa0;
+  --display: "IBM Plex Sans", "Segoe UI", system-ui, sans-serif; --mono: "IBM Plex Mono", ui-monospace, "Cascadia Mono", monospace;
+  --s-2: 8px; --s-3: 12px; --s-4: 16px; --s-5: 24px; --s-6: 32px; --s-7: 48px; --s-8: 64px; --s-9: 96px;
+  --gutter: 16px; --wrap: 1240px; --r-l: 22px;
+}
+@media (min-width: 900px) { :root { --gutter: 24px; } }
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--ink); color: var(--fg); font: 400 17px/1.6 var(--display); -webkit-font-smoothing: antialiased; }
+a { color: inherit; }
+:focus-visible { outline: 2px solid var(--teal); outline-offset: 3px; border-radius: 4px; }
+.wrap { max-width: calc(var(--wrap) + 2 * var(--gutter)); margin: 0 auto; padding: 0 var(--gutter); }
+.bar { }
+.bar .wrap { display: flex; align-items: center; justify-content: space-between; min-height: 64px; gap: var(--s-4); }
+.brand { display: inline-flex; align-items: center; gap: var(--s-3); text-decoration: none; font-weight: 600; font-size: 20px; letter-spacing: -0.01em; min-height: 44px; }
+.brand img { width: 40px; height: 28px; }
+.back { font-size: 15px; color: var(--fg-dim); text-decoration: none; min-height: 44px; display: inline-flex; align-items: center; }
+.back:hover { color: var(--fg); }
+main { padding: var(--s-9) 0 var(--s-8); }
+.who { display: grid; grid-template-columns: minmax(0, 4fr) minmax(0, 7fr); gap: var(--s-7) var(--gutter); align-items: start; }
+.portrait { position: relative; aspect-ratio: 1; border-radius: 50%; overflow: hidden; background: var(--ink-raised); border: 1px solid var(--line); display: grid; place-items: center; max-width: 380px; }
+.portrait::before { content: attr(data-i); font: 500 clamp(48px, 7vw, 96px)/1 var(--mono); color: var(--fg-dim); }
+.portrait img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.label { font: 400 13px/1.4 var(--mono); color: var(--fg-dim); margin: 0 0 var(--s-4); }
+h1 { font-size: clamp(40px, 5.4vw, 76px); font-weight: 600; letter-spacing: -0.03em; line-height: 1.02; margin: 0; }
+.role { font-size: clamp(18px, 1.5vw, 22px); color: var(--fg-dim); margin: var(--s-4) 0 0; }
+.bio { margin-top: var(--s-7); display: grid; gap: var(--s-4); max-width: 36em; }
+.bio p { margin: 0; }
+.facts { margin: var(--s-7) 0 0; display: grid; max-width: 36em; }
+.facts div { display: grid; grid-template-columns: minmax(0, 2fr) minmax(0, 5fr); gap: var(--s-4); padding: var(--s-3) 0; }
+.facts dt { font: 400 13px/1.6 var(--mono); color: var(--fg-dim); }
+.facts dd { margin: 0; font-size: 15px; }
+.next { margin-top: var(--s-9); }
+.next a { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: var(--s-2) var(--s-4); padding: var(--s-5) 0; text-decoration: none; min-height: 44px; }
+.next i { grid-column: 2; grid-row: 1 / 3; font-size: 22px; }
+.next span { font: 400 13px/1.4 var(--mono); color: var(--fg-dim); }
+.next b { font-size: clamp(22px, 2.4vw, 32px); font-weight: 600; letter-spacing: -0.02em; }
+.next i { font-style: normal; color: var(--fg-dim); transition: transform 0.3s, color 0.3s; }
+.next a:hover i { transform: translateX(4px); color: var(--teal); }
+@media (max-width: 760px) {
+  main { padding-top: var(--s-7); }
+  .who { grid-template-columns: 1fr; gap: var(--s-6); }
+  .portrait { max-width: 180px; }
+}
+@media (prefers-reduced-motion: reduce) { .next i { transition: none; } }
+</style>
+</head>
+<body>
+<header class="bar"><div class="wrap">
+  <a class="brand" href="../index.html"><img src="../media/veyra.svg" alt="" width="40" height="28">Veyra</a>
+  <a class="back" href="../index.html#team">&larr; Back to the team</a>
+</div></header>
+<main><div class="wrap">
+  <article class="who">
+    <div class="portrait" data-i="MC"><img src="../media/team/martina.jpg" alt="Portrait of Martina Cesarini" width="760" height="760" onerror="this.remove()"></div>
+    <div>
+      <p class="label">Team</p>
+      <h1>Martina Cesarini</h1>
+      <p class="role">Co-founder &middot; Technology</p>
+      <div class="bio">
+        <p>XR developer. Martina leads the technology behind Veyra: the app that runs on Meta Quest at the bench and Studio, the desk app where procedures are written and published.</p>
+      </div>
+      <dl class="facts">
+        <div><dt>Works on</dt><dd>Headset app, Studio, voice and the assistant</dd></div>
+        <div><dt>Background</dt><dd>[e.g. studies, previous work]</dd></div>
+        <div><dt>Contact</dt><dd>[email or LinkedIn]</dd></div>
+      </dl>
+    </div>
+  </article>
+  <nav class="next" aria-label="Team"><a href="filippo.html"><span>Also on the team</span><b>Filippo</b><i aria-hidden="true">&rarr;</i></a></nav>
+</div></main>
+</body>
+</html>
