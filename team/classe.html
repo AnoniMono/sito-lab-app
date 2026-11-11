@@ -9,7 +9,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
-<link rel="stylesheet" href="../buttons.css">
+<link rel="stylesheet" href="../buttons.css?v=3">
 <style>
 :root {
   --ink: #0b0d10; --ink-raised: #13161b; --fg: #eef1ef; --fg-dim: #a2aba7; --line: rgba(238, 241, 239, 0.13); --teal: #2fbfa0;
@@ -44,6 +44,14 @@ h1 { font-size: clamp(40px, 5.4vw, 76px); font-weight: 600; letter-spacing: -0.0
 .facts dd { margin: 0; font-size: 15px; }
 .facts dd a { text-underline-offset: 3px; text-decoration-thickness: 1px; }
 .facts dd a:hover { color: var(--teal); }
+/* the students: a short roster, two columns, initials in small rounds like the team cards */
+.crew { margin-top: var(--s-8); max-width: 36em; }
+.crew-h { margin: 0 0 var(--s-4); font: 500 14px/1.4 var(--display); color: var(--teal); }
+.crew-list { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--s-3) var(--s-5); }
+.crew-list li { display: flex; align-items: center; gap: var(--s-3); font-size: 17px; font-weight: 500; }
+.crew-av { flex: none; width: 44px; height: 44px; border-radius: 50%; display: grid; place-items: center; background: var(--ink-raised); border: 1px solid var(--line); }
+.crew-av::before { content: attr(data-i); font: 500 14px/1 var(--display); color: var(--fg-dim); }
+@media (max-width: 480px) { .crew-list { grid-template-columns: 1fr; } }
 .next { margin-top: var(--s-9); }
 .next a { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: var(--s-2) var(--s-4); padding: var(--s-5) 0; text-decoration: none; min-height: 44px; }
 .next .next-port { grid-column: 2; grid-row: 1 / 3; width: 56px; height: 56px; border: 1px solid var(--line); border-radius: 50%; display: grid; place-items: center; color: var(--fg); transition: background-color 0.2s, border-color 0.2s, color 0.2s; }
@@ -83,11 +91,20 @@ h1 { font-size: clamp(40px, 5.4vw, 76px); font-weight: 600; letter-spacing: -0.0
         <div><dt data-i18n="tc.studyK">Studies</dt><dd data-i18n="tc.study">Chemical and microbiological quality control, GMP and GLP, regulatory affairs, data integrity</dd></div>
         <div><dt data-i18n="tc.formatK">Format</dt><dd data-i18n="tc.format">Two years: 1,000 hours of classes and labs, 800 of internship</dd></div>
       </dl>
-      <!-- the class: the five students, to add here (names coming) -->
+      <section class="crew" aria-labelledby="crew-h">
+        <h2 class="crew-h" id="crew-h" data-i18n="tc.crewH">The students</h2>
+        <ul class="crew-list">
+          <li><span class="crew-av" data-i="GB" aria-hidden="true"></span>Gianluca Belci</li>
+          <li><span class="crew-av" data-i="NM" aria-hidden="true"></span>Nadi Mane</li>
+          <li><span class="crew-av" data-i="AM" aria-hidden="true"></span>Ahlem Mabrouk</li>
+          <li><span class="crew-av" data-i="B" aria-hidden="true"></span>Balint</li>
+          <li><span class="crew-av" data-i="SL" aria-hidden="true"></span>Samuele Luceri</li>
+        </ul>
+      </section>
     </div>
   </article>
   <nav class="next" aria-label="Team"><a href="martina.html"><span data-i18n="tp.next">Also on the team</span><b>Martina Cesarini</b><span class="next-port" aria-hidden="true"><svg viewBox="0 0 16 16"><path d="M2.5 8h11M9 3.5 13.5 8 9 12.5"/></svg></span></a></nav>
 </div></main>
-<script src="../i18n.js"></script>
+<script src="../i18n.js?v=3"></script>
 </body>
 </html>

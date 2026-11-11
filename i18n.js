@@ -156,6 +156,7 @@
     'tc.qual': 'Tecnico Superiore per il sistema di qualità di prodotti e processi a base biotecnologica e chimico industriali (V livello EQF)',
     'tc.studyK': 'Studia',
     'tc.study': 'Controllo qualità chimico e microbiologico, GMP e GLP, affari regolatori, data integrity',
+    'tc.crewH': 'I ragazzi',
     'tc.formatK': 'Percorso',
     'tc.format': 'Due anni: 1000 ore di aula e laboratorio, 800 di stage',
 
