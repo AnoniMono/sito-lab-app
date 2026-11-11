@@ -109,6 +109,8 @@
     'team.b2': 'Chimico. Guida la parte scientifica di Veyra: procedure, dati di sicurezza, calcoli e analisi, sempre fedeli alla pratica di laboratorio.',
     'team.l2': 'Chi è Filippo',
     'team.r3': 'Classe &middot; Siena',
+    'team.b3': 'La classe 2025 di BIOQUALTECH all’ITS VITA di Siena: futuri tecnici della qualità per la produzione biotecnologica e chimica.',
+    'team.l3': 'Chi è la classe',
 
     'fb.h': 'Lavori in laboratorio? Dicci dove perdi tempo.',
     'fb.p': 'Dieci domande, circa tre minuti. Le tue risposte decidono cosa costruiamo dopo.',
@@ -144,6 +146,18 @@
     'tf.bio': 'Chimico. Filippo guida la parte scientifica di Veyra: come sono strutturate e controllate le procedure, i dati di sicurezza dietro ogni reagente, i calcoli e l’analisi dei risultati, sempre fedeli alla pratica di laboratorio.',
     'tf.works': 'Procedure, dati di sicurezza, calcoli, analisi',
     'tf.alt': 'Ritratto di Filippo Rosati',
+    'tc.title': 'Bioqualtech25 · Veyra',
+    'tc.role': 'Classe &middot; ITS VITA, Siena',
+    'tc.bio': 'La classe 2025 di BIOQUALTECH, il corso biennale dell’ITS VITA di Siena che forma tecnici della qualità per la produzione biotecnologica e chimica. Studiano il lavoro per cui nasce Veyra: procedure, controllo qualità e documentazione di laboratorio.',
+    'tc.alt': 'La classe Bioqualtech25',
+    'tc.courseK': 'Corso',
+    'tc.course': 'ITS VITA, Siena',
+    'tc.titleK': 'Titolo',
+    'tc.qual': 'Tecnico Superiore per il sistema di qualità di prodotti e processi a base biotecnologica e chimico industriali (V livello EQF)',
+    'tc.studyK': 'Studia',
+    'tc.study': 'Controllo qualità chimico e microbiologico, GMP e GLP, affari regolatori, data integrity',
+    'tc.formatK': 'Percorso',
+    'tc.format': 'Due anni: 1000 ore di aula e laboratorio, 800 di stage',
 
     /* privacy page */
     'pp.title': 'Privacy · Veyra',
