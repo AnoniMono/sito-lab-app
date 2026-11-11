@@ -471,6 +471,7 @@ section { padding-block: var(--sp-section); }
 .who-card .av { align-self: start; }
 /* the bios differ in length: the links sit on the cards' shared bottom edge, so they line up side by side */
 .who-text .btn { margin-top: auto; }
+.who-card.is-group { grid-column: 1 / -1; } /* the class: a group, on its own row under the two founders */
 .av { position: relative; width: var(--av); height: var(--av); --av: 120px; border-radius: 50%; display: grid; place-items: center; text-decoration: none;
   background: var(--ink-raised); border: 1px solid var(--line); transition: border-color 0.2s; }
 .who-card:hover .av { border-color: var(--fg-dim); }
@@ -735,8 +736,8 @@ footer { padding: var(--s-9) 0 var(--s-6); color: var(--fg-dim); font-size: 15px
     <div class="wrap">
       <div class="team-head sec-head">
         <p class="eyebrow" data-i18n="team.eye">Team</p>
-        <h2 data-i18n="team.h">A developer and a chemist.</h2>
-        <p data-i18n="team.p">Veyra is built by two people: one leads the technology, the other the science behind it.</p>
+        <h2 data-i18n="team.h">A developer, a chemist and a class.</h2>
+        <p data-i18n="team.p">Veyra is built by two people, one on the technology and one on the science, together with a class from Siena.</p>
       </div>
       <div class="team-row">
         <article class="who-card">
@@ -755,6 +756,14 @@ footer { padding: var(--s-9) 0 var(--s-6); color: var(--fg-dim); font-size: 15px
             <p class="who-role" data-i18n="team.r2">Co-founder &middot; Science</p>
             <p data-i18n="team.b2">Chemist. Leads the science behind Veyra: procedures, safety data, calculations and analysis, all held to real lab practice.</p>
             <a class="btn btn-line" data-go="next" href="team/filippo.html"><span class="btn-goo" aria-hidden="true"><i class="goo-pill"></i><i class="goo-dot"></i></span><span class="btn-label" data-i18n="team.l2">About Filippo</span><span class="btn-port" aria-hidden="true"><svg viewBox="0 0 16 16"><path d="M2.5 8h11M9 3.5 13.5 8 9 12.5"/></svg></span></a>
+          </div>
+        </article>
+        <article class="who-card is-group">
+          <span class="av" data-i="BQ" aria-hidden="true"></span>
+          <div class="who-text">
+            <h3>Bioqualtech25</h3>
+            <p class="who-role" data-i18n="team.r3">Class &middot; Siena</p>
+            <!-- what the class does on Veyra, to add here: <p data-i18n="team.b3">…</p> (plus the Italian in i18n.js) -->
           </div>
         </article>
       </div>

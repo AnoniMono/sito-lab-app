@@ -100,14 +100,15 @@
     'priv.c3p': 'Solo quando chiedi che cos’è qualcosa.',
 
     'team.eye': 'Team',
-    'team.h': 'Una sviluppatrice e un chimico.',
-    'team.p': 'Veyra è costruito da due persone: una guida la tecnologia, l’altra la scienza che c’è dietro.',
+    'team.h': 'Una sviluppatrice, un chimico e una classe.',
+    'team.p': 'Veyra è costruito da due persone, una per la tecnologia e una per la scienza, insieme a una classe di Siena.',
     'team.r1': 'Co-fondatrice &middot; Tecnologia',
     'team.b1': 'Sviluppatrice XR. Guida la tecnologia di Veyra, dall’app per Meta&nbsp;Quest al banco a Studio alla scrivania.',
     'team.l1': 'Chi è Martina',
     'team.r2': 'Co-fondatore &middot; Scienza',
     'team.b2': 'Chimico. Guida la parte scientifica di Veyra: procedure, dati di sicurezza, calcoli e analisi, sempre fedeli alla pratica di laboratorio.',
     'team.l2': 'Chi è Filippo',
+    'team.r3': 'Classe &middot; Siena',
 
     'fb.h': 'Lavori in laboratorio? Dicci dove perdi tempo.',
     'fb.p': 'Dieci domande, circa tre minuti. Le tue risposte decidono cosa costruiamo dopo.',
